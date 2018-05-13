@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief     Implements the sensing capabilities of the robot claw.
+ * @author    Wiebe van Breukelen
+ * @license   See LICENSE
+ */
+
 #ifndef CLAW_SENSING_HPP
 #define CLAW_SENSING_HPP
 

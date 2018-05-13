@@ -1,4 +1,4 @@
-// Include hwlib """"header only"""" code.
+/// Include hwlib """"header only"""" code.
 #define HWLIB_ONCE
 #include "wrap-hwlib.hpp"
 
