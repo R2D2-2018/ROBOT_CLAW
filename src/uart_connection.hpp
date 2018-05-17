@@ -19,6 +19,8 @@ enum class UARTController {ONE, TWO, THREE};
 class UARTConnection {
 public:
 
+  UARTConnection(bool initializeController = true);
+
   void begin();
   void available();
   inline void enable();
@@ -29,6 +31,8 @@ public:
 
   char receiveByte();
   const char* receiveString();
+
+  ~UARTConnection();
 
 private:
   Usart *hardwareUSART = USART0;

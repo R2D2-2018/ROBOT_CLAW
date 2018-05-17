@@ -1,5 +1,16 @@
 #include "uart_connection.hpp"
 
+UARTConnection::UARTConnection(bool initializeController) {
+    if (initializeController) {
+        begin();
+    }
+}
+
+UARTConnection::~UARTConnection() {
+    /// Disable the UART controller on destruction
+    disable();
+}
+
 void UARTConnection::begin() {
     /// Only initialize the UART controller if it hasn't been enabled.
     if (USARTControllerInitialized) {
