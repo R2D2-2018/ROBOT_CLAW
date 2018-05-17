@@ -40,6 +40,8 @@ public:
   void operator<<(const char c);
   void operator<<(const char *str);
 
+  void operator>>(char &c);
+
   ~UARTConnection();
 
 private:

@@ -106,6 +106,18 @@ char UARTConnection::receive() {
     return rxBuffer.pop();   
 }
 
+void UARTConnection::operator<<(const char *str) {
+    send(str);
+}
+
+void UARTConnection::operator<<(const char c) {
+    send(c);
+}
+
+void UARTConnection::operator>>(char &c) {
+    c = receive();
+}
+
 bool UARTConnection::isInitialized() {
     return USARTControllerInitialized;
 }
