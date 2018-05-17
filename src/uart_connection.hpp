@@ -174,7 +174,6 @@ private:
    * 
    */
   Queue<char, 250> rxBuffer;
-  //int rxBufferIndex = 0, rxReadIndex = 0;
 
   /**
    * @brief Checks if the USART controller reports that the transmitter is ready to send.
