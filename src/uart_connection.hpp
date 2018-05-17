@@ -9,6 +9,7 @@
 #define UART_COMM_HPP
 
 #include "wrap-hwlib.hpp"
+#include "queue.hpp"
 
 enum class UARTController {ONE, TWO, THREE};
 
@@ -22,15 +23,22 @@ public:
   UARTConnection(bool initializeController = true);
 
   void begin();
-  void available();
+  //bool available();
+  unsigned int available();
   inline void enable();
   inline void disable();
 
   bool send(const char c);
   bool send(const char *c);
+  bool send(const char* data, size_t length);
 
-  char receiveByte();
-  const char* receiveString();
+  char receive();
+  //const char* receiveString();
+
+  bool isInitialized();
+
+  void operator<<(const char c);
+  void operator<<(const char *c);
 
   ~UARTConnection();
 
@@ -41,7 +49,9 @@ private:
 
   bool USARTControllerInitialized = false;
 
-  char receiveBuffer[800];
+  //char rxBuffer[800];
+  Queue<char, 800> rxBuffer;
+  int rxBufferIndex = 0, rxReadIndex = 0;
 
   inline bool txReady();
 
@@ -51,7 +61,8 @@ private:
    * @param char Byte to send.
    */
   void sendByte(const char &b);
-  //void sendByte(char b);
+
+  inline char receiveByte();
 };
 
 #endif

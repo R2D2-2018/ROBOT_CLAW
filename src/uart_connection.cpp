@@ -46,6 +46,22 @@ void UARTConnection::begin() {
     USARTControllerInitialized = true;
 }
 
+unsigned int UARTConnection::available() {
+    if (!USARTControllerInitialized) {
+        return false;
+    }
+
+    /// We use the USART Channel status register to check if there is data available in the receiver buffer.
+    //return (hardwareUSART->US_CSR & 1) != 0;
+
+    if ((hardwareUSART->US_CSR & 1) != 0) {
+        //rxBuffer[rxBufferIndex++] = receiveByte();
+        rxBuffer.push(receiveByte());
+    }
+
+    return rxBuffer.count();
+}
+
 bool UARTConnection::send(const char b) {
     if (!USARTControllerInitialized) {
         return false;
@@ -68,12 +84,42 @@ bool UARTConnection::send(const char* str) {
     return true;
 }
 
+bool UARTConnection::send(const char* data, size_t length) {
+    if (!USARTControllerInitialized) {
+        return false;
+    }
+
+    for (unsigned int i = 0; i < length; i++) {
+        sendByte(data[i]);
+    }
+    
+    return true;
+}
+
+char UARTConnection::receive() {
+    if (!USARTControllerInitialized || !rxBuffer.count()) {
+        return -1;
+    }
+
+    //return receiveByte();
+
+    return rxBuffer.pop();   
+}
+
+bool UARTConnection::isInitialized() {
+    return USARTControllerInitialized;
+}
+
 void UARTConnection::sendByte(const char &b) {
     /// Wait before we can send any more data
     while (!txReady());
 
     /// Send it!
     hardwareUSART->US_THR = b;
+}
+
+inline char UARTConnection::receiveByte() {
+    return hardwareUSART->US_RHR;
 }
 
 inline bool UARTConnection::txReady() {
