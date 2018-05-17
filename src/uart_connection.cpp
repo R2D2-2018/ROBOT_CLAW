@@ -1,6 +1,6 @@
 #include "uart_connection.hpp"
 
-UARTConnection::UARTConnection(bool initializeController) {
+UARTConnection::UARTConnection(unsigned int baudrate, UARTController controller, bool initializeController) : baudrate(baudrate), controller(controller) {
     if (initializeController) {
         begin();
     }
@@ -12,6 +12,9 @@ UARTConnection::~UARTConnection() {
 }
 
 void UARTConnection::begin() {
+    /// Point to the correct pointer
+    hardwareUSART = USART0;
+
     /// Only initialize the UART controller if it hasn't been enabled.
     if (USARTControllerInitialized) {
         return;
@@ -31,7 +34,8 @@ void UARTConnection::begin() {
 
     /// Set the baudrate to 115200. see page 799
     /// Calculation: 5241600 / desired baudrate
-    hardwareUSART->US_BRGR = 45;
+    /// 115200: 45
+    hardwareUSART->US_BRGR = (5241600u / baudrate);
 
     /// No parity, normal channel mode. Use a 8 bit data field.
     hardwareUSART->US_MR = UART_MR_PAR_NO | UART_MR_CHMODE_NORMAL | US_MR_CHRL_8_BIT; // Might check if this definition is compatable with USART as well.

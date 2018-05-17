@@ -20,7 +20,7 @@ enum class UARTController {ONE, TWO, THREE};
 class UARTConnection {
 public:
 
-  UARTConnection(bool initializeController = true);
+  UARTConnection(unsigned int baudrate, UARTController controller = UARTController::ONE, bool initializeController = true);
 
   void begin();
   //bool available();
@@ -45,7 +45,9 @@ public:
   ~UARTConnection();
 
 private:
-  Usart *hardwareUSART = USART0;
+  Usart *hardwareUSART = nullptr;
+  unsigned int baudrate;
+  UARTController controller;
   //Usart *hardwareUSARTTwo = USART1;
   //Usart *hardwareUSARTThree = USART2;
 
