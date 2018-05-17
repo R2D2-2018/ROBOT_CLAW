@@ -29,7 +29,7 @@ public:
   inline void disable();
 
   bool send(const char c);
-  bool send(const char *c);
+  bool send(const char *str);
   bool send(const char* data, size_t length);
 
   char receive();
@@ -38,7 +38,7 @@ public:
   bool isInitialized();
 
   void operator<<(const char c);
-  void operator<<(const char *c);
+  void operator<<(const char *str);
 
   ~UARTConnection();
 
