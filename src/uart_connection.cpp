@@ -12,22 +12,47 @@ UARTConnection::~UARTConnection() {
 }
 
 void UARTConnection::begin() {
-    /// Point to the correct pointer
-    hardwareUSART = USART0;
-
     /// Only initialize the UART controller if it hasn't been enabled.
     if (USARTControllerInitialized) {
         return;
     }
 
-    /// Disable PIO control on PA10, PA11 and set up for peripheral A
-    PIOA->PIO_PDR = PIO_PA10;
-    PIOA->PIO_ABSR &= ~PIO_PA10;
-    PIOA->PIO_PDR = PIO_PA11;
-    PIOA->PIO_ABSR &= ~PIO_PA11;
+    /// Setup the correct USART controller.
+    if (controller == UARTController::ONE) {
+        hardwareUSART = USART0;
 
-    /// Enable the clock to USART0
-    PMC->PMC_PCER0 = (0x01 << ID_USART0);
+        /// Disable PIO control on PA10, PA11 and set up for peripheral A.
+        PIOA->PIO_PDR = PIO_PA10;
+        PIOA->PIO_ABSR &= ~PIO_PA10;
+        PIOA->PIO_PDR = PIO_PA11;
+        PIOA->PIO_ABSR &= ~PIO_PA11;
+
+        /// Enable the clock to USART0.
+        PMC->PMC_PCER0 = (0x01 << ID_USART0);
+    } else if (controller == UARTController::TWO) {
+        hardwareUSART = USART1;
+
+        /// Disable PIO control on PA12, PA13 and set up for peripheral A.
+        PIOA->PIO_PDR = PIO_PA12;
+        PIOA->PIO_ABSR &= ~PIO_PA12;
+        PIOA->PIO_PDR = PIO_PA13;
+        PIOA->PIO_ABSR &= ~PIO_PA13;
+
+        /// Enable the clock to USART1.
+        PMC->PMC_PCER0 = (0x01 << ID_USART1);
+    } else {
+        hardwareUSART = USART3;
+
+        /// Disable PIO control on PD4, PD5 and set up for peripheral B (setting a high bit).
+        /// Section 31.7.24 - http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-11057-32-bit-Cortex-M3-Microcontroller-SAM3X-SAM3A_Datasheet.pdf
+        PIOD->PIO_PDR = PIO_PD4;
+        PIOD->PIO_ABSR |= PIO_PD4;
+        PIOD->PIO_PDR = PIO_PD5;
+        PIOD->PIO_ABSR |= PIO_PD5;
+
+        /// Enable the clock to USART3.
+        PMC->PMC_PCER0 = (0x01 << ID_USART3);
+    }
 
     // Disable the UART connection to make changes.
     disable();
