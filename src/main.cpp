@@ -10,17 +10,19 @@
 #include "claw.hpp"
 #include "uart_connection.hpp"
 
-Usart *hardwareUSART = USART0;
+//Usart *hardwareUSART = USART0;
 
-void uartInit();
-void uartSendByte(char b);
+//void uartInit();
+//void uartSendByte(char b);
 
 // What could be done?
 // - A lot of testing
 // - Class architecture
 // - 
 
-void uartInit() {
+/**void uartInit() {
+
+
     // Disable PIO control on PA10, PA11 and set up for peripheral A
     PIOA->PIO_PDR = PIO_PA10;
     PIOA->PIO_ABSR &= ~PIO_PA10;
@@ -45,20 +47,23 @@ void uartInit() {
 
     // Enable the transmitter and receiver
     hardwareUSART->US_CR = UART_CR_RXEN | UART_CR_TXEN;
+
+    /// USART controller is enabled
+
 }
 
 void uartSendByte(char b) {
     // We use the USART Channel status register to wait until the TXRDY bit is cleared. If so, we are ready to send more data.
     while ((hardwareUSART->US_CSR & 2) == 0);
     hardwareUSART->US_THR = b;
-}
+}**/
 
 int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
 
     namespace target = hwlib::target;
 
-    uartInit();
+    //uartInit();
 
     hwlib::wait_ms(500);
 
@@ -67,11 +72,17 @@ int main() {
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    while (true) {
+    UARTConnection conn;
+
+    conn.begin();
+
+    conn.send("Hello World!");
+
+    /**while (true) {
         uartSendByte(0xA0);
 
         hwlib::wait_ms(200);
-    }
+    }**/
 
     /**UARTCommunication uart;
     Claw claw(uart, touchSensorLeft, touchSensorRight);
