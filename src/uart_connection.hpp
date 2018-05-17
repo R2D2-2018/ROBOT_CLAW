@@ -11,15 +11,33 @@
 #include "wrap-hwlib.hpp"
 #include "queue.hpp"
 
+/**
+ * @brief Used to select the UART controllers available on the Arduino Due.
+ * 
+ * Pins:
+ * One   - 18 and 19
+ * Two   - 16 and 17
+ * Three - 14 and 15
+ */
 enum class UARTController {ONE, TWO, THREE};
 
 /**
- * @brief Establishes an serial/UART connection using the dedicated serial controlled located on the Arduino Due.
+ * @brief Establishes an serial/UART connection using on of the three dedicated serial controllers located on the Arduino Due.
  *
  */
 class UARTConnection {
 public:
 
+  /**
+   * @brief Construct a new UARTConnection object.
+   * 
+   * @param baudrate Transmit and receive baudrate.
+   * @param controller Controller used to transmit and receive.
+   * 
+   * By default, controller one is selected (pins 18 and 19 on the Arduino Due).
+   * 
+   * @param initializeController Initialize the USART controller directly within the object constructor.
+   */
   UARTConnection(unsigned int baudrate, UARTController controller = UARTController::ONE, bool initializeController = true);
 
   /**
@@ -118,6 +136,12 @@ public:
    */
   void operator>>(char &c);
 
+  /**
+   * @brief Destroy the UARTConnection object.
+   * 
+   * Disables the UART controller to save resources.
+   * 
+   */
   ~UARTConnection();
 
 private:
