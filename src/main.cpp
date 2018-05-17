@@ -8,7 +8,7 @@
 #include "wrap-hwlib.hpp"
 
 #include "claw.hpp"
-#include "uart_communication.hpp"
+#include "uart_connection.hpp"
 
 Usart *hardwareUSART = USART0;
 

@@ -14,7 +14,7 @@
  * @brief Establishes an serial/UART connection using the dedicated serial controlled located on the Arduino Due.
  *
  */
-class UARTCommunication {
+class UARTConnection {
   public:
     /**
      * @brief Send a byte of the serial connection.

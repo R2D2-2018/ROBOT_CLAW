@@ -8,16 +8,16 @@
 #define CLAW_HPP
 
 #include "claw_sensing.hpp"
-#include "uart_communication.hpp"
+#include "uart_connection.hpp"
 
 class Claw {
   private:
     unsigned int position;
-    UARTCommunication &uartComm;
+    UARTConnection &uartComm;
     ClawSensing clawSensing;
 
   public:
-    explicit Claw(UARTCommunication &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
+    explicit Claw(UARTConnection &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
         : position(0), uartComm(uart), clawSensing(touchSensorLeft, touchSensorRight){};
 
     /**
