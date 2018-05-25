@@ -1,7 +1,7 @@
 /**
  * @file
  * @brief     Interface for the uArm Swift Pro claw/gripper
- * @author    Wiebe van Breukelen
+ * @author    Wiebe van Breukelen & Sam Zandee
  * @license   See LICENSE
  */
 #ifndef CLAW_HPP

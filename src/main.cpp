@@ -25,6 +25,7 @@ int main() {
 
     UARTConnection conn(115200, UARTController::ONE);
     hwlib::wait_ms(500);
+    Claw claw(conn, touchSensorLeft, touchSensorRight);
 
     long startMsReceive = hwlib::now_us() / 1000;
     long startMsSend = hwlib::now_us() / 1000;
@@ -38,9 +39,9 @@ int main() {
             conn << "#n P2203\n"; // Getting version
 
             if (state) {
-                conn << "#n M2232 V0\n";
+                claw.open();
             } else {
-                conn << "#n M2232 V1\n";
+                claw.close();
             }
 
             state = !state;
