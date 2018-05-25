@@ -24,7 +24,7 @@ int main() {
 
     UARTConnection conn(115200, UARTController::ONE, false);
     Claw claw(conn, touchSensorLeft, touchSensorRight);
-    
+
     conn.begin();
 
     hwlib::wait_ms(500);
@@ -38,7 +38,7 @@ int main() {
     claw.getUarmFirmwareVersion(fwVersion);
 
     hwlib::cout << fwVersion << hwlib::endlRet;
-   
+
     bool state = false;
     startMsReceive = hwlib::now_us() / 1000;
     startMsSend = hwlib::now_us() / 1000;
@@ -49,7 +49,7 @@ int main() {
 
             if (state) {
                 hwlib::cout << "Opening claw...\n";
-                
+
                 claw.open();
             } else {
                 hwlib::cout << "Closing claw...\n";
@@ -57,19 +57,18 @@ int main() {
             }
 
             state = !state;
-            
         }
 
         debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
     }
 }
 
-
 /**
- * @brief If the developer would like to view the serial output of the uArm Swift Pro, they can place this function within the endless main loop.
- * 
+ * @brief If the developer would like to view the serial output of the uArm Swift Pro, they can place this function within the
+ * endless main loop.
+ *
  */
-inline void debugUarmRx (UARTConnection &conn) {
+inline void debugUarmRx(UARTConnection &conn) {
     if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 30) {
         for (unsigned int i = 0; i < conn.available(); i++) {
             hwlib::cout << conn.receive();
@@ -78,4 +77,3 @@ inline void debugUarmRx (UARTConnection &conn) {
         startMsReceive = hwlib::now_us() / 1000;
     }
 }
-

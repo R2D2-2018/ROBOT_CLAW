@@ -1,6 +1,5 @@
 #include "claw.hpp"
 
-
 void Claw::open() {
     uartComm << "#n M2232 V0\n";
 }
@@ -82,7 +81,7 @@ unsigned int Claw::getPosition() {
     return position;
 }
 
-char* Claw::getUarmFirmwareVersion(char response[15]) {
+char *Claw::getUarmFirmwareVersion(char response[15]) {
     uartComm << "#n P2203\n";
 
     int responseIndex = 0;
@@ -101,6 +100,6 @@ char* Claw::getUarmFirmwareVersion(char response[15]) {
     }
 
     response[responseIndex] = '\0';
-    
+
     return response;
 }

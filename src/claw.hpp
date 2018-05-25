@@ -14,19 +14,19 @@ class Claw {
   private:
     /**
      * @brief The current position of the claw
-     * 
+     *
      */
     unsigned int position;
 
     /**
      * @brief UART connection to communicate with the uArm Swift Pro.
-     * 
+     *
      */
     UARTConnection &uartComm;
 
     /**
      * @brief Used to check if an object has been grabbed/released by the robotic claw.
-     * 
+     *
      */
     ClawSensing clawSensing;
 
@@ -106,11 +106,11 @@ class Claw {
 
     /**
      * @brief Get the version of the firmware currently running on the uArm.
-     * 
+     *
      * @param response Char buffer to write version string to.
      * @return char* Written char buffer.
      */
-    char* getUarmFirmwareVersion(char response[15]);
+    char *getUarmFirmwareVersion(char response[15]);
 };
 
 #endif
