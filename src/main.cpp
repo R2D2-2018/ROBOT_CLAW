@@ -24,36 +24,35 @@ int main() {
     target::pin_in touchSensorRight(target::pins::d5);
 
     UARTConnection conn(115200, UARTController::ONE);
+    hwlib::wait_ms(500);
+
+    long startMsReceive = hwlib::now_us() / 1000;
+    long startMsSend = hwlib::now_us() / 1000;
 
     conn.begin();
+    bool state = false;
 
-    conn.send('a');
-    conn.send("Hello World!");
+    while (true) {
+        if ((hwlib::now_us() / 1000) - startMsSend > 2500) {
+            startMsSend = hwlib::now_us() / 1000;
+            conn << "#n P2203\n"; // Getting version
 
-    hwlib::wait_ms(500);
-   
+            if (state) {
+                conn << "#n M2232 V0\n";
+            } else {
+                conn << "#n M2232 V1\n";
+            }
 
-    /**while (true) {
-        uartSendByte(0xA0);
+            state = !state;
+            
+        }
 
-        hwlib::wait_ms(200);
-    }**/
+        if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 50) {
+            startMsReceive = hwlib::now_us() / 1000;
 
-    /**UARTCommunication uart;
-    Claw claw(uart, touchSensorLeft, touchSensorRight);
-
-    /// Perform some small mock tests.
-    claw.open();
-
-    hwlib::wait_ms(1000);
-
-    claw.close();
-
-    hwlib::wait_ms(1000);
-
-    claw.openUntilReleased();
-
-    hwlib::cout << "Actual position: " << claw.getPosition() << hwlib::endlRet;
-
-    return 0;**/
+            for (unsigned int i = 0; i < conn.available(); i++) {
+                hwlib::cout << conn.receive();
+            }
+        }
+    }
 }
