@@ -28,6 +28,16 @@ int main() {
     conn.begin();
 
     hwlib::wait_ms(500);
+
+    char fwVersion[15];
+    hwlib::cout << "Receiving firmware version... -> ";
+
+    /// Print the firmware version running on the claw.
+    /// If the claw is not probably connected, this function will hang forever.
+    /// In a further sprint, this should be fixed.
+    claw.getUarmFirmwareVersion(fwVersion);
+
+    hwlib::cout << fwVersion << hwlib::endlRet;
    
     bool state = false;
     startMsReceive = hwlib::now_us() / 1000;
@@ -68,3 +78,4 @@ inline void debugUarmRx (UARTConnection &conn) {
         startMsReceive = hwlib::now_us() / 1000;
     }
 }
+
