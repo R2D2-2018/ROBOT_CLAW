@@ -8,17 +8,38 @@
 #include "wrap-hwlib.hpp"
 
 #include "claw.hpp"
-#include "uart_communication.hpp"
+#include "uart_connection.hpp"
+
 
 int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
 
     namespace target = hwlib::target;
 
+    hwlib::wait_ms(500);
+
+    hwlib::cout << "Hi there!" << hwlib::endlRet;
+
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    UARTCommunication uart;
+    UARTConnection conn;
+
+    conn.begin();
+
+    conn.send('a');
+    conn.send("Hello World!");
+
+    hwlib::wait_ms(500);
+   
+
+    /**while (true) {
+        uartSendByte(0xA0);
+
+        hwlib::wait_ms(200);
+    }**/
+
+    /**UARTCommunication uart;
     Claw claw(uart, touchSensorLeft, touchSensorRight);
 
     /// Perform some small mock tests.
@@ -34,5 +55,5 @@ int main() {
 
     hwlib::cout << "Actual position: " << claw.getPosition() << hwlib::endlRet;
 
-    return 0;
+    return 0;**/
 }
