@@ -103,6 +103,14 @@ class Claw {
      * @return unsigned int Current position of the robotic claw in the scale of 0-100.
      */
     unsigned int getPosition();
+
+    /**
+     * @brief Get the version of the firmware currently running on the uArm.
+     * 
+     * @param response Char buffer to write version string to.
+     * @return char* Written char buffer.
+     */
+    char* getUarmFirmwareVersion(char response[15]);
 };
 
 #endif

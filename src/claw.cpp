@@ -81,3 +81,29 @@ void Claw::setPosition(unsigned int destPos) {
 unsigned int Claw::getPosition() {
     return position;
 }
+
+char* Claw::getUarmFirmwareVersion(char response[15]) {
+    uartComm << "#n P2203\n";
+
+    int responseIndex = 0;
+    while (true) {
+        char byteRead;
+
+        if (uartComm.available() > 0) {
+            byteRead = uartComm.receive();
+            if (byteRead != '\n' && responseIndex < 15) {
+                response[responseIndex++] = byteRead;
+            } else {
+                break;
+            }
+
+           
+        }
+
+    }
+
+    response[responseIndex] = '\0';
+
+    
+    return response;
+}
