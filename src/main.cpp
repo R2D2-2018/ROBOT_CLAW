@@ -23,7 +23,7 @@ int main() {
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    UARTConnection conn;
+    UARTConnection conn(115200, UARTController::ONE);
 
     conn.begin();
 
