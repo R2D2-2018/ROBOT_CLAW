@@ -10,37 +10,39 @@
 #include "claw.hpp"
 #include "uart_connection.hpp"
 
+inline void debugUarmRx(UARTConnection &conn);
+
+namespace target = hwlib::target;
+
+long startMsReceive = 0, startMsSend = 0;
 
 int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
 
-    namespace target = hwlib::target;
-
-    hwlib::wait_ms(500);
-
-    hwlib::cout << "Hi there!" << hwlib::endlRet;
-
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    UARTConnection conn(115200, UARTController::ONE);
-    hwlib::wait_ms(500);
+    UARTConnection conn(115200, UARTController::ONE, false);
     Claw claw(conn, touchSensorLeft, touchSensorRight);
-
-    long startMsReceive = hwlib::now_us() / 1000;
-    long startMsSend = hwlib::now_us() / 1000;
-
+    
     conn.begin();
+
+    hwlib::wait_ms(500);
+   
     bool state = false;
+    startMsReceive = hwlib::now_us() / 1000;
+    startMsSend = hwlib::now_us() / 1000;
 
     while (true) {
-        if ((hwlib::now_us() / 1000) - startMsSend > 2500) {
+        if ((hwlib::now_us() / 1000) - startMsSend > 5000) {
             startMsSend = hwlib::now_us() / 1000;
-            conn << "#n P2203\n"; // Getting version
 
             if (state) {
+                hwlib::cout << "Opening claw...\n";
+                
                 claw.open();
             } else {
+                hwlib::cout << "Closing claw...\n";
                 claw.close();
             }
 
@@ -48,12 +50,21 @@ int main() {
             
         }
 
-        if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 50) {
-            startMsReceive = hwlib::now_us() / 1000;
+        debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
+    }
+}
 
-            for (unsigned int i = 0; i < conn.available(); i++) {
-                hwlib::cout << conn.receive();
-            }
+
+/**
+ * @brief If the developer would like to view the serial output of the uArm Swift Pro, they can place this function within the endless main loop.
+ * 
+ */
+inline void debugUarmRx (UARTConnection &conn) {
+    if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 30) {
+        for (unsigned int i = 0; i < conn.available(); i++) {
+            hwlib::cout << conn.receive();
         }
+
+        startMsReceive = hwlib::now_us() / 1000;
     }
 }
