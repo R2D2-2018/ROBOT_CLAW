@@ -48,12 +48,19 @@ int main() {
             startMsSend = hwlib::now_us() / 1000;
 
             if (state) {
-                hwlib::cout << "Opening claw...\n";
+                hwlib::cout << "Opening claw..." << hwlib::endlRet;
 
                 claw.open();
+
+                hwlib::wait_ms(2000);
+                hwlib::cout << "Object detected!" << hwlib::endlRet;
             } else {
-                hwlib::cout << "Closing claw...\n";
+                hwlib::cout << "Closing claw..." << hwlib::endlRet;
+
                 claw.close();
+                
+                hwlib::wait_ms(2000);
+                hwlib::cout << "Object released!" << hwlib::endlRet;
             }
 
             state = !state;
