@@ -1,10 +1,8 @@
 #include "claw.hpp"
 
+
 void Claw::open() {
-    hwlib::cout << "Opening the claw..." << hwlib::endlRet;
-    hwlib::wait_ms(1000);
-    position = 100;
-    hwlib::cout << "Claw opened!" << hwlib::endlRet;
+    uartComm << "#n M2232 V0\n";
 }
 
 void Claw::openUntilReleased() {
@@ -22,12 +20,7 @@ void Claw::openUntilReleased() {
 }
 
 void Claw::close() {
-    hwlib::cout << "Closing the claw..." << hwlib::endlRet;
-
-    hwlib::wait_ms(1000);
-
-    position = 0;
-    hwlib::cout << "Claw closed!" << hwlib::endlRet;
+    uartComm << "#n M2232 V1\n";
 }
 
 void Claw::closeUntilGrabbed() {
