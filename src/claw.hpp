@@ -1,7 +1,7 @@
 /**
  * @file
  * @brief     Interface for the uArm Swift Pro claw/gripper
- * @author    Wiebe van Breukelen & Sam Zandee
+ * @author    Wiebe van Breukelen, Sam Zandee
  * @license   See LICENSE
  */
 #ifndef CLAW_HPP
@@ -12,8 +12,22 @@
 
 class Claw {
   private:
+    /**
+     * @brief The current position of the claw
+     * 
+     */
     unsigned int position;
+
+    /**
+     * @brief UART connection to communicate with the uArm Swift Pro.
+     * 
+     */
     UARTConnection &uartComm;
+
+    /**
+     * @brief Used to check if an object has been grabbed/released by the robotic claw.
+     * 
+     */
     ClawSensing clawSensing;
 
   public:
