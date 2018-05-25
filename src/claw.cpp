@@ -91,19 +91,16 @@ char* Claw::getUarmFirmwareVersion(char response[15]) {
 
         if (uartComm.available() > 0) {
             byteRead = uartComm.receive();
+            /// Read until the end line.
             if (byteRead != '\n' && responseIndex < 15) {
                 response[responseIndex++] = byteRead;
             } else {
                 break;
             }
-
-           
         }
-
     }
 
     response[responseIndex] = '\0';
-
     
     return response;
 }
