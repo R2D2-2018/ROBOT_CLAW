@@ -1,10 +1,7 @@
 #include "claw.hpp"
 
 void Claw::open() {
-    hwlib::cout << "Opening the claw..." << hwlib::endlRet;
-    hwlib::wait_ms(1000);
-    position = 100;
-    hwlib::cout << "Claw opened!" << hwlib::endlRet;
+    uartComm << "#n M2232 V0\n";
 }
 
 void Claw::openUntilReleased() {
@@ -22,12 +19,7 @@ void Claw::openUntilReleased() {
 }
 
 void Claw::close() {
-    hwlib::cout << "Closing the claw..." << hwlib::endlRet;
-
-    hwlib::wait_ms(1000);
-
-    position = 0;
-    hwlib::cout << "Claw closed!" << hwlib::endlRet;
+    uartComm << "#n M2232 V1\n";
 }
 
 void Claw::closeUntilGrabbed() {
@@ -87,4 +79,27 @@ void Claw::setPosition(unsigned int destPos) {
 
 unsigned int Claw::getPosition() {
     return position;
+}
+
+char *Claw::getUarmFirmwareVersion(char response[15]) {
+    uartComm << "#n P2203\n";
+
+    int responseIndex = 0;
+    while (true) {
+        char byteRead;
+
+        if (uartComm.available() > 0) {
+            byteRead = uartComm.receive();
+            /// Read until the end line.
+            if (byteRead != '\n' && responseIndex < 15) {
+                response[responseIndex++] = byteRead;
+            } else {
+                break;
+            }
+        }
+    }
+
+    response[responseIndex] = '\0';
+
+    return response;
 }

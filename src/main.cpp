@@ -10,50 +10,77 @@
 #include "claw.hpp"
 #include "uart_connection.hpp"
 
+inline void debugUarmRx(UARTConnection &conn);
+
+namespace target = hwlib::target;
+
+long startMsReceive = 0, startMsSend = 0;
 
 int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
 
-    namespace target = hwlib::target;
-
-    hwlib::wait_ms(500);
-
-    hwlib::cout << "Hi there!" << hwlib::endlRet;
-
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    UARTConnection conn;
+    UARTConnection conn(115200, UARTController::ONE, false);
+    Claw claw(conn, touchSensorLeft, touchSensorRight);
 
     conn.begin();
 
-    conn.send('a');
-    conn.send("Hello World!");
-
     hwlib::wait_ms(500);
-   
 
-    /**while (true) {
-        uartSendByte(0xA0);
+    char fwVersion[15];
+    hwlib::cout << "Receiving firmware version... -> ";
 
-        hwlib::wait_ms(200);
-    }**/
+    /// Print the firmware version running on the claw.
+    /// If the claw is not probably connected, this function will hang forever.
+    /// In a further sprint, this should be fixed.
+    claw.getUarmFirmwareVersion(fwVersion);
 
-    /**UARTCommunication uart;
-    Claw claw(uart, touchSensorLeft, touchSensorRight);
+    hwlib::cout << fwVersion << hwlib::endlRet;
 
-    /// Perform some small mock tests.
-    claw.open();
+    bool state = false;
+    startMsReceive = hwlib::now_us() / 1000;
+    startMsSend = hwlib::now_us() / 1000;
 
-    hwlib::wait_ms(1000);
+    while (true) {
+        if ((hwlib::now_us() / 1000) - startMsSend > 5000) {
+            startMsSend = hwlib::now_us() / 1000;
 
-    claw.close();
+            if (state) {
+                hwlib::cout << "Opening claw..." << hwlib::endlRet;
 
-    hwlib::wait_ms(1000);
+                claw.open();
 
-    claw.openUntilReleased();
+                hwlib::wait_ms(2000);
+                hwlib::cout << "Object detected!" << hwlib::endlRet;
+            } else {
+                hwlib::cout << "Closing claw..." << hwlib::endlRet;
 
-    hwlib::cout << "Actual position: " << claw.getPosition() << hwlib::endlRet;
+                claw.close();
+                
+                hwlib::wait_ms(2000);
+                hwlib::cout << "Object released!" << hwlib::endlRet;
+            }
 
-    return 0;**/
+            state = !state;
+        }
+
+        debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
+    }
+}
+
+/**
+ * @brief If the developer would like to view the serial output of the uArm Swift Pro, they can place this function within the
+ * endless main loop.
+ *
+ */
+inline void debugUarmRx(UARTConnection &conn) {
+    if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 30) {
+        for (unsigned int i = 0; i < conn.available(); i++) {
+            hwlib::cout << conn.receive();
+        }
+
+        startMsReceive = hwlib::now_us() / 1000;
+    }
 }
