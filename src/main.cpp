@@ -58,7 +58,7 @@ int main() {
                 hwlib::cout << "Closing claw..." << hwlib::endlRet;
 
                 claw.close();
-                
+
                 hwlib::wait_ms(2000);
                 hwlib::cout << "Object released!" << hwlib::endlRet;
             }
