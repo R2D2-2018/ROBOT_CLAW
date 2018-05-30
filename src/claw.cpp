@@ -78,7 +78,7 @@ void Claw::setPosition(unsigned int destPos) {
 }
 
 bool Claw::isConnected() {
-    //char response[15];
+    // char response[15];
     uartComm << "#n P2203\n";
 
     if (!receiveGcodeResponse(nullptr, 255)) {
@@ -96,10 +96,10 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
     int versionStart = 0;
 
     for (int i = 0; i < 15; i++) {
-        /// If we have the Gcode response `$n ok V3.2.1` we only want to return the stuff behind the V mark (in this example: 3.2.1).
-        /// We determine the position of the V mark.
+        /// If we have the Gcode response `$n ok V3.2.1` we only want to return the stuff behind the V mark (in this
+        /// example: 3.2.1). We determine the position of the V mark.
         if (response[i] == 'V') {
-            
+
             versionStart = i;
             break;
         }
@@ -144,7 +144,7 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
 
                 lastRead = hwlib::now_us();
             } else if (responseCharCounter > 0) {
-                //hwlib::cout << "Endline found!\n";
+                // hwlib::cout << "Endline found!\n";
                 receivingData = false;
             }
         }
@@ -171,14 +171,13 @@ ClawState Claw::getState() {
     receiveGcodeResponse(response, 15);
 
     switch (response[8]) {
-        case '0':
-            return ClawState::STOPPED;
-        case '1':
-            return ClawState::MOVING;
-        case '2':
-            return ClawState::GRIPPED_OBJECT;
-        default:
-            return ClawState::UNKNOWN;
+    case '0':
+        return ClawState::STOPPED;
+    case '1':
+        return ClawState::MOVING;
+    case '2':
+        return ClawState::GRIPPED_OBJECT;
+    default:
+        return ClawState::UNKNOWN;
     }
-
 }

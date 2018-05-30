@@ -7,8 +7,8 @@
 #ifndef CLAW_HPP
 #define CLAW_HPP
 
-#include "claw_state.hpp"
 #include "claw_sensing.hpp"
+#include "claw_state.hpp"
 #include "uart_connection.hpp"
 
 class Claw {
@@ -107,10 +107,10 @@ class Claw {
 
     /**
      * @brief Check if the uArm Swift Pro is connected.
-     * 
+     *
      * By trying to receive the firmware version, we determine if the uArm Swift Pro is connected.
      * If the arm is not connected, a serial receive timeout will occur.
-     * 
+     *
      * @return true Device connected.
      * @return false Device is not connected.
      */
@@ -126,17 +126,16 @@ class Claw {
 
     /**
      * @brief Receive Gcode string from the uArm Swift Pro using UART.
-     * 
+     *
      * We continuely poll the uArm Swift Pro for new serial data. If the read timeout is reached,
      * we will stop the polling and return 0 (no characters received).
-     * 
+     *
      * @param response Gcode response string.
      * @param responseSize Gcode response string size.
      * @param readTimeout UART receiver timeout in milliseconds.
      * @return int Amount of character read (including \0).
      */
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
-
 };
 
 #endif

@@ -33,12 +33,13 @@ int main() {
     // Check if the uArm is connected.
     if (!claw.isConnected()) {
         hwlib::cout << "uArm is not connected!" << hwlib::endlRet;
-        while (!claw.isConnected()) hwlib::wait_ms(500);
+        while (!claw.isConnected())
+            hwlib::wait_ms(500);
     }
 
     hwlib::wait_ms(1000);
 
-    //hwlib::cout << "uArm is connected!" << hwlib::endlRet;
+    // hwlib::cout << "uArm is connected!" << hwlib::endlRet;
 
     char response[15];
     hwlib::cout << "Receiving firmware version... -> ";
@@ -49,7 +50,7 @@ int main() {
     claw.getUarmFirmwareVersion(response);
 
     hwlib::cout << response << hwlib::endlRet;
-    //hwlib::wait_ms(200);
+    // hwlib::wait_ms(200);
 
     bool state = false;
     startMsReceive = hwlib::now_us() / 1000;
@@ -92,7 +93,7 @@ int main() {
             state = !state;
         }
 
-        //debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
+        // debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
     }
 }
 
