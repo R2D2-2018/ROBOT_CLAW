@@ -81,25 +81,61 @@ unsigned int Claw::getPosition() {
     return position;
 }
 
-char *Claw::getUarmFirmwareVersion(char response[15]) {
+bool Claw::isConnected() {
+    char response[15];
     uartComm << "#n P2203\n";
 
-    int responseIndex = 0;
-    while (true) {
-        char byteRead;
+    if (!receiveGcodeResponse(response, 15)) {
+        return false;
+    }
 
+    return true;
+}
+
+void Claw::getUarmFirmwareVersion(char response[15]) {
+    uartComm << "#n P2203\n";
+
+    receiveGcodeResponse(response, 15);
+}
+
+int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout) {
+    bool receivingData = true;
+    unsigned int responseCharCounter = 0;
+    char byteRead = 0;
+
+    /// Convert to microseconds
+    readTimeout *= 1000;
+
+    /// Decrease the response size as we will include a \0 character by ourselves.
+    if (responseSize > 0) {
+        responseSize--;
+    }
+
+    unsigned int lastRead = hwlib::now_us();
+
+    while (receivingData) {
         if (uartComm.available() > 0) {
             byteRead = uartComm.receive();
-            /// Read until the end line.
-            if (byteRead != '\n' && responseIndex < 15) {
-                response[responseIndex++] = byteRead;
+
+            /// Read until we found an endline character.
+            /// If the responseCharCounter does equal the size of the response array, we stop to prevent writing out of memory.
+            if (byteRead != '\n' && responseCharCounter < responseSize) {
+                response[responseCharCounter++] = byteRead;
+                lastRead = hwlib::now_us();
             } else {
-                break;
+                receivingData = false;
             }
+        }
+
+        /// Check if a timeout occurred. If so, return zero.
+        if ((hwlib::now_us() - lastRead) > readTimeout) {
+            return 0;
         }
     }
 
-    response[responseIndex] = '\0';
+    /// Add a \0 character to the response
+    response[responseCharCounter++] = '\0';
 
-    return response;
+    /// Return the amount of characters read
+    return responseCharCounter;
 }

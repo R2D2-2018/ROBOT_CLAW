@@ -27,7 +27,15 @@ int main() {
 
     conn.begin();
 
-    hwlib::wait_ms(500);
+    hwlib::wait_ms(1000);
+
+    // Check if the uArm is connected.
+    if (!claw.isConnected()) {
+        hwlib::cout << "uArm is not connected!" << hwlib::endlRet;
+        while (!claw.isConnected()) hwlib::wait_ms(500);
+    }
+
+    hwlib::cout << "uArm is connected!" << hwlib::endlRet;
 
     char fwVersion[15];
     hwlib::cout << "Receiving firmware version... -> ";
@@ -50,14 +58,14 @@ int main() {
             if (state) {
                 hwlib::cout << "Opening claw..." << hwlib::endlRet;
 
-                claw.open();
+                //claw.open();
 
                 hwlib::wait_ms(2000);
                 hwlib::cout << "Object detected!" << hwlib::endlRet;
             } else {
                 hwlib::cout << "Closing claw..." << hwlib::endlRet;
 
-                claw.close();
+                //claw.close();
 
                 hwlib::wait_ms(2000);
                 hwlib::cout << "Object released!" << hwlib::endlRet;

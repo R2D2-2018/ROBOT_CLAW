@@ -104,13 +104,18 @@ class Claw {
      */
     unsigned int getPosition();
 
+    bool isConnected();
+
     /**
      * @brief Get the version of the firmware currently running on the uArm.
      *
      * @param response Char buffer to write version string to.
      * @return char* Written char buffer.
      */
-    char *getUarmFirmwareVersion(char response[15]);
+    void getUarmFirmwareVersion(char response[15]);
+
+    /// readTimeout is in milliseconds
+    int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
 };
 
 #endif
