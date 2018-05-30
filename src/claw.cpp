@@ -70,7 +70,6 @@ void Claw::setPosition(unsigned int destPos) {
 }
 
 bool Claw::isConnected() {
-    // char response[15];
     uartComm << "#n P2203\n";
 
     if (!receiveGcodeResponse(nullptr, 255)) {
