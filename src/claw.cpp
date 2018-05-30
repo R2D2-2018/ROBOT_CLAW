@@ -82,10 +82,10 @@ unsigned int Claw::getPosition() {
 }
 
 bool Claw::isConnected() {
-    char response[15];
+    //char response[15];
     uartComm << "#n P2203\n";
 
-    if (!receiveGcodeResponse(response, 15)) {
+    if (!receiveGcodeResponse(nullptr, 255)) {
         return false;
     }
 
@@ -120,7 +120,12 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
             /// Read until we found an endline character.
             /// If the responseCharCounter does equal the size of the response array, we stop to prevent writing out of memory.
             if (byteRead != '\n' && responseCharCounter < responseSize) {
-                response[responseCharCounter++] = byteRead;
+                if (response) {
+                    /// Only if the response is not a null pointer, we write to the response array.
+                    response[responseCharCounter] = byteRead;
+                }
+                responseCharCounter += 1;
+
                 lastRead = hwlib::now_us();
             } else {
                 receivingData = false;
@@ -133,8 +138,10 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
         }
     }
 
-    /// Add a \0 character to the response
-    response[responseCharCounter++] = '\0';
+    /// Add a \0 character to the response, if the is a response.
+    if (responseCharCounter > 0) {
+        response[responseCharCounter++] = '\0';
+    }
 
     /// Return the amount of characters read
     return responseCharCounter;
