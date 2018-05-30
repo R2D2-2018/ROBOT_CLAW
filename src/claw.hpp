@@ -72,26 +72,6 @@ class Claw {
     void decrementAngle();
 
     /**
-     * @brief Check if the robot claw is open.
-     *
-     * The position of the robot claw must be > 0 if open.
-     *
-     * @return true Robot arm open
-     * @return false Robot arm closed
-     */
-    bool isOpen();
-
-    /**
-     * @brief Check if the robot claw is closed
-     *
-     * The position of the robot claw must be zero if closed.
-     *
-     * @return true
-     * @return false
-     */
-    bool isClosed();
-
-    /**
      * @brief Set the position of the robot claw.
      *
      * @param destPos Position of the robotic claw in the scale of 0-100.

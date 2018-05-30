@@ -59,14 +59,6 @@ void Claw::decrementAngle() {
     position--;
 }
 
-bool Claw::isOpen() {
-    return (position > 0) ? true : false;
-}
-
-bool Claw::isClosed() {
-    return (position == 0) ? true : false;
-}
-
 void Claw::setPosition(unsigned int destPos) {
     /// Check if the destination position is in range and not in the current position
     if (position <= 100 && destPos != position) {
@@ -99,7 +91,6 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
         /// If we have the Gcode response `$n ok V3.2.1` we only want to return the stuff behind the V mark (in this
         /// example: 3.2.1). We determine the position of the V mark.
         if (response[i] == 'V') {
-
             versionStart = i;
             break;
         }
@@ -143,8 +134,7 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
                 responseCharCounter += 1;
 
                 lastRead = hwlib::now_us();
-            } else if (responseCharCounter > 0) {
-                // hwlib::cout << "Endline found!\n";
+            } else if (responseCharCounter > 0) { /// We have found a endline. If the response char counter is larger then zero (there is data), we will stopping polling for new data.
                 receivingData = false;
             }
         }
@@ -170,7 +160,20 @@ ClawState Claw::getState() {
     char response[15];
     receiveGcodeResponse(response, 15);
 
-    switch (response[8]) {
+    /// Response format: $n ok V1\n
+    /// Search for V character
+    int vStart = 0;
+
+    for (int i = 0; i < 15; i++) {
+        /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
+        /// example: 1). We determine the position of the V mark.
+        if (response[i] == 'V') {
+            vStart = i;
+            break;
+        }
+    }
+
+    switch (response[vStart + 1]) {
     case '0':
         return ClawState::STOPPED;
     case '1':
