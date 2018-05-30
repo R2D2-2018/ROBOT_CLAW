@@ -77,10 +77,6 @@ void Claw::setPosition(unsigned int destPos) {
     }
 }
 
-unsigned int Claw::getPosition() {
-    return position;
-}
-
 bool Claw::isConnected() {
     //char response[15];
     uartComm << "#n P2203\n";
@@ -96,6 +92,26 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
     uartComm << "#n P2203\n";
 
     receiveGcodeResponse(response, 15);
+
+    int versionStart = 0;
+
+    for (int i = 0; i < 15; i++) {
+        /// If we have the Gcode response `$n ok V3.2.1` we only want to return the stuff behind the V mark (in this example: 3.2.1).
+        /// We determine the position of the V mark.
+        if (response[i] == 'V') {
+            
+            versionStart = i;
+            break;
+        }
+    }
+
+    int startIterator = 0;
+
+    /// Move everything after the V mark to the begin of the array.
+    for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
+        response[startIterator] = response[versionIterator + 1];
+        startIterator++;
+    }
 }
 
 int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout) {
@@ -127,7 +143,8 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
                 responseCharCounter += 1;
 
                 lastRead = hwlib::now_us();
-            } else {
+            } else if (responseCharCounter > 0) {
+                //hwlib::cout << "Endline found!\n";
                 receivingData = false;
             }
         }
@@ -145,4 +162,23 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
 
     /// Return the amount of characters read
     return responseCharCounter;
+}
+
+ClawState Claw::getState() {
+    uartComm << "#n P2232\n";
+
+    char response[15];
+    receiveGcodeResponse(response, 15);
+
+    switch (response[8]) {
+        case '0':
+            return ClawState::STOPPED;
+        case '1':
+            return ClawState::MOVING;
+        case '2':
+            return ClawState::GRIPPED_OBJECT;
+        default:
+            return ClawState::UNKNOWN;
+    }
+
 }
