@@ -11,7 +11,7 @@ void Claw::close() {
 bool Claw::isConnected() {
     uartComm << "#n P2203\n";
 
-    /// By giving a null pointer as a method parameter, we save unnecessarily memory space. 
+    /// By giving a null pointer as a method parameter, we save unnecessarily memory space.
     if (!receiveGcodeResponse(nullptr, 255)) {
         return false;
     }
@@ -73,7 +73,8 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
                 responseCharCounter += 1;
 
                 lastRead = hwlib::now_us();
-            } else if (responseCharCounter > 0) { /// We have found a endline. If the response char counter is larger then zero (there is data), we will stopping polling for new data.
+            } else if (responseCharCounter > 0) { /// We have found a endline. If the response char counter is larger then zero
+                                                  /// (there is data), we will stopping polling for new data.
                 receivingData = false;
             }
         }

@@ -74,7 +74,6 @@ class Claw {
     void getUarmFirmwareVersion(char response[15]);
 
   private:
-
     /**
      * @brief Receive Gcode string from the uArm Swift Pro using UART.
      *
