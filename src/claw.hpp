@@ -42,41 +42,10 @@ class Claw {
     void open();
 
     /**
-     * @brief Open the robot claw until a object has been gripped.
-     *
-     */
-    void openUntilReleased();
-
-    /**
      * @brief Close the robot claw.
      *
      */
     void close();
-
-    /**
-     * @brief Close the robot claw until an object has been gripped.
-     *
-     */
-    void closeUntilGrabbed();
-
-    /**
-     * @brief Increment the angle to the robot claw with the smallest precision possible.
-     *
-     */
-    void incrementAngle();
-
-    /**
-     * @brief Decrement the angle to the robot claw with the smallest precision possible.
-     *
-     */
-    void decrementAngle();
-
-    /**
-     * @brief Set the position of the robot claw.
-     *
-     * @param destPos Position of the robotic claw in the scale of 0-100.
-     */
-    void setPosition(unsigned int destPos);
 
     /**
      * @brief Get the current claw state.
@@ -103,6 +72,8 @@ class Claw {
      * @return char* Written char buffer.
      */
     void getUarmFirmwareVersion(char response[15]);
+
+  private:
 
     /**
      * @brief Receive Gcode string from the uArm Swift Pro using UART.
