@@ -67,27 +67,29 @@ int main() {
 
                 claw.open();
 
-                hwlib::wait_ms(1500);
-                hwlib::cout << "Object detected!" << hwlib::endlRet;
+                // hwlib::wait_ms(1500);
+                // hwlib::cout << "Object detected!" << hwlib::endlRet;
             } else {
                 hwlib::cout << "Closing claw..." << hwlib::endlRet;
 
                 claw.close();
 
-                hwlib::wait_ms(1500);
-                hwlib::cout << "Object released!" << hwlib::endlRet;
+                // hwlib::wait_ms(1500);
+                // hwlib::cout << "Object released!" << hwlib::endlRet;
             }
+            while ((hwlib::now_us()/1000)-startMsSend < 8000){ 
+                ClawState curState = claw.getState();
 
-            ClawState curState = claw.getState();
-
-            if (curState == ClawState::STOPPED) {
-                hwlib::cout << "Claw stopped!" << hwlib::endlRet;
-            } else if (curState == ClawState::MOVING) {
-                hwlib::cout << "Claw moving!" << hwlib::endlRet;
-            } else if (curState == ClawState::GRIPPED_OBJECT) {
-                hwlib::cout << "Claw gripping!" << hwlib::endlRet;
-            } else {
-                hwlib::cout << "Claw state unknown!" << hwlib::endlRet;
+                if (curState == ClawState::STOPPED) {
+                    hwlib::cout << "Claw stopped!" << hwlib::endlRet;
+                } else if (curState == ClawState::MOVING) {
+                    hwlib::cout << "Claw moving!" << hwlib::endlRet;
+                } else if (curState == ClawState::GRIPPED_OBJECT) {
+                    hwlib::cout << "Claw gripping!" << hwlib::endlRet;
+                } else {
+                    hwlib::cout << "Claw state unknown!" << hwlib::endlRet;
+                }
+                hwlib::wait_ms(1000);
             }
 
             state = !state;
