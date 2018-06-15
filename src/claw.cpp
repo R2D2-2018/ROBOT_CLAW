@@ -39,7 +39,7 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
 
     /// Move everything after the V mark to the begin of the array.
     for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
-        response[startIterator] = response[versionIterator + 1];
+        response[startIterator] = response[versionIterator];
         startIterator++;
     }
 }
