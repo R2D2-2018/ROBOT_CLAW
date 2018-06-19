@@ -124,3 +124,30 @@ ClawState Claw::getState() {
         return ClawState::UNKNOWN;
     }
 }
+
+ClawFeedback Claw::decodeGcodeResponse(char *response, size_t responseSize) {
+    for (int i = 0; i < 15; ++i) {
+        if (response[i] == 'o' && response[i + 1] == 'k') {
+            return ClawFeedback::OK;
+        } else if (response[i] == 'E') {
+            switch (response[i + 2]) {
+            case '0':
+                return ClawFeedback::E20;
+            case '1':
+                return ClawFeedback::E21;
+            case '2':
+                return ClawFeedback::E22;
+            case '3':
+                return ClawFeedback::E23;
+            case '4':
+                return ClawFeedback::E24;
+            case '5':
+                return ClawFeedback::E25;
+            default:
+                return ClawFeedback::UNKNOWN;
+            }
+        }
+    }
+
+    return ClawFeedback::UNKNOWN;
+}

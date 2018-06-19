@@ -11,6 +11,12 @@
 #include "claw_state.hpp"
 #include "uart_connection.hpp"
 
+/**
+ * @brief Enum containing all the different possible responses given by the uArm
+ *
+ */
+enum class ClawFeedback { OK, E20, E21, E22, E23, E24, E25, UNKNOWN };
+
 class Claw {
   private:
     /**
@@ -86,6 +92,8 @@ class Claw {
      * @return int Amount of character read (including \0).
      */
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
+
+    ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
 };
 
 #endif
