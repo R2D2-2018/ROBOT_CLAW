@@ -19,8 +19,15 @@ bool Claw::isConnected() {
     return true;
 }
 
+void Claw::setRotation() {
+    /// Rotate the 3rd anchor (yaw of claw)
+    /// Command as followed: G2201 is rotate single anchor command
+    /// N3 = 3rd node
+    /// V = value in degrees (1-180)
+    uartComm << "#n G2201 N3 V100\n";
+}
+
 void Claw::getUarmFirmwareVersion(char response[15]) {
-    uartComm << "#n P2203\n";
 
     receiveGcodeResponse(response, 15);
 
@@ -39,7 +46,7 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
 
     /// Move everything after the V mark to the begin of the array.
     for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
-        response[startIterator] = response[versionIterator];
+        response[startIterator] = response[versionIterator] + 1;
         startIterator++;
     }
 }

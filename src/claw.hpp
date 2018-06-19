@@ -73,6 +73,11 @@ class Claw {
      */
     void getUarmFirmwareVersion(char response[15]);
 
+    /**
+     * @brief Set current rotation of claw yaw
+     */
+    void setRotation();
+
   private:
     /**
      * @brief Receive Gcode string from the uArm Swift Pro using UART.

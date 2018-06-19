@@ -50,51 +50,22 @@ int main() {
     claw.getUarmFirmwareVersion(response);
 
     hwlib::cout << response << hwlib::endlRet;
-    // hwlib::wait_ms(200);
 
-    bool state = false;
+    // bool state = false;
     startMsReceive = hwlib::now_us() / 1000;
     startMsSend = hwlib::now_us() / 1000;
 
+    /// opening and closing of the claw tests
+    hwlib::cout << "close\n" << hwlib::endlRet;
+    claw.close();
+    hwlib::wait_ms(1500);
+    hwlib::cout << "open\n" << hwlib::endlRet;
     claw.open();
+    hwlib::wait_ms(2000);
 
-    while (true) {
-        if ((hwlib::now_us() / 1000) - startMsSend > 9000) {
-            startMsSend = hwlib::now_us() / 1000;
-
-            if (state) {
-                hwlib::cout << "Opening claw..." << hwlib::endlRet;
-
-                claw.open();
-
-                hwlib::wait_ms(1500);
-                hwlib::cout << "Object detected!" << hwlib::endlRet;
-            } else {
-                hwlib::cout << "Closing claw..." << hwlib::endlRet;
-
-                claw.close();
-
-                hwlib::wait_ms(1500);
-                hwlib::cout << "Object released!" << hwlib::endlRet;
-            }
-
-            ClawState curState = claw.getState();
-
-            if (curState == ClawState::STOPPED) {
-                hwlib::cout << "Claw stopped!" << hwlib::endlRet;
-            } else if (curState == ClawState::MOVING) {
-                hwlib::cout << "Claw moving!" << hwlib::endlRet;
-            } else if (curState == ClawState::GRIPPED_OBJECT) {
-                hwlib::cout << "Claw gripping!" << hwlib::endlRet;
-            } else {
-                hwlib::cout << "Claw state unknown!" << hwlib::endlRet;
-            }
-
-            state = !state;
-        }
-
-        // debugUarmRx(conn); /// Debugging purposes. You may remove this if you don't want the serial output of the uArm Swift Pro.
-    }
+    /// Rotation tests
+    hwlib::cout << "rotate\n" << hwlib::endlRet;
+    claw.setRotation();
 }
 
 /**
