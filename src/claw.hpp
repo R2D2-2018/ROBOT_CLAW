@@ -15,7 +15,7 @@
  * @brief Enum containing all the different possible responses given by the uArm
  *
  */
-enum class ClawFeedback { OK, E20, E21, E22, E23, E24, E25, UNKNOWN };
+enum class ClawFeedback { E20 = 0, E21 = 1, E22 = 2, E23 = 3, E24 = 4, E25 = 5, OK };
 
 class Claw {
   private:
@@ -101,6 +101,7 @@ class Claw {
      * @param[in] response Gcode response string.
      * @param[in] responseSize Gcode response string size.
      * @return ClawFeedback The decoded response from the uArm.
+     */
     ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
 };
 
