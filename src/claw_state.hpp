@@ -7,6 +7,6 @@
 #ifndef CLAW_STATE_HPP
 #define CLAW_STATE_HPP
 
-enum class ClawState { STOPPED, MOVING, GRIPPED_OBJECT, UNKNOWN };
+enum class ClawState { STOPPED, MOVING, GRIPPED_OBJECT, CLOSED, UNKNOWN };
 
 #endif
