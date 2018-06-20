@@ -194,4 +194,4 @@ inline void HardwareUART::disable() {
     ///< Set the control register to reset and disable the receiver and transmitter.
     hardwareUSART->US_CR = UART_CR_RSTRX | UART_CR_RSTTX | UART_CR_RXDIS | UART_CR_TXDIS;
 }
-}
+} // namespace UARTLib

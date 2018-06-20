@@ -140,4 +140,4 @@ inline void MockUART::enable() {
 inline void MockUART::disable() {
     ///< Normally, we would disable the USART controller right now. Since it's a mock implementation, we don't do that.
 }
-}
+} // namespace UARTLib
