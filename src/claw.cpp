@@ -4,6 +4,26 @@ void Claw::open() {
     uartComm << "#n M2232 V0\n";
 }
 
+void Claw::getError() {
+    uartComm << "#n G2202 N3 V120\n";
+    hwlib::wait_ms(500);
+    uartComm << "#n G2202 N3 V120\n";
+    hwlib::wait_ms(500);
+    char response[60];
+    receiveGcodeResponse(response, 60);
+    for (auto const &value : response) {
+        hwlib::cout << value << ",";
+    }
+    hwlib::cout << hwlib::endlRet;
+    ClawFeedback feedback = decodeGcodeResponse(response, 60);
+    if (feedback == ClawFeedback::OK) {
+        hwlib::cout << "OK" << hwlib::endlRet;
+    } else {
+        hwlib::cout << "error" << hwlib::endlRet;
+        // static_cast<int>(feedback)
+    }
+}
+
 void Claw::close() {
     uartComm << "#n M2232 V1\n";
 }

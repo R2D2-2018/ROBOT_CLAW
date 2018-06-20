@@ -78,6 +78,7 @@ class Claw {
      * @return char* Written char buffer.
      */
     void getUarmFirmwareVersion(char response[15]);
+    void getError();
 
   private:
     /**
