@@ -11,5 +11,7 @@ include_directories (${catch}/single_include)
 # Source Files:
 
 set (sources
-   
+    src/claw.cpp
+    src/claw_sensing.cpp
+    src/mock_uart.cpp
 )

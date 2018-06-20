@@ -5,12 +5,13 @@
 
 #include "claw.hpp"
 #include "claw_state.hpp"
-#include "uart_connection.hpp"
+#include "uart_lib.hpp"
 
-TEST_CASE("Virtual controller test demo") {
-    hwlib::test::pin_in<6> gripSensor{1, 0, 0, 1, 0, 1};
-    UARTConnection conn(115200, UARTController::ONE, false);
-    Claw claw(, gripSensor);
+TEST_CASE("Detect closed gripper") {
+    UARTLib::MockUART conn(115200, UARTLib::UARTController::THREE, false);
+    hwlib::test::pin_in<2> gripSensor{0, 1};
+    Claw claw(conn, gripSensor);
 
     REQUIRE(claw.getState() == ClawState::CLOSED);
+    REQUIRE(claw.getState() != ClawState::CLOSED);
 }

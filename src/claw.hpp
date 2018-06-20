@@ -9,7 +9,7 @@
 
 #include "claw_sensing.hpp"
 #include "claw_state.hpp"
-#include "uart_connection.hpp"
+#include "uart_lib.hpp"
 
 class Claw {
   private:
@@ -23,7 +23,7 @@ class Claw {
      * @brief UART connection to communicate with the uArm Swift Pro.
      *
      */
-    UARTConnection &uartComm;
+    UARTLib::UARTConnection &uartComm;
 
     /**
      * @brief Used to check if an object has been grabbed/released by the robotic claw.
@@ -32,7 +32,8 @@ class Claw {
     ClawSensing clawSensing;
 
   public:
-    explicit Claw(UARTConnection &uart, hwlib::pin_in &gripSensor) : position(0), uartComm(uart), clawSensing(gripSensor){};
+    explicit Claw(UARTLib::UARTConnection &uart, hwlib::pin_in &gripSensor)
+        : position(0), uartComm(uart), clawSensing(gripSensor){};
 
     /**
      * @brief Open the robot claw.

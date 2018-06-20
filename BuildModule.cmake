@@ -4,9 +4,9 @@ set (sources ${sources}
     src/main.cpp
     src/wrap-hwlib.cpp
     src/libc-stub.cpp
-    src/uart_connection.cpp
     src/claw.cpp
     src/claw_sensing.cpp
+    src/hardware_uart.cpp
 )
 
 add_definitions (-DBMPTK_TARGET_arduino_due
