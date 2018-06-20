@@ -32,8 +32,7 @@ class Claw {
     ClawSensing clawSensing;
 
   public:
-    explicit Claw(UARTConnection &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
-        : position(0), uartComm(uart), clawSensing(touchSensorLeft, touchSensorRight){};
+    explicit Claw(UARTConnection &uart, hwlib::pin_in &gripSensor) : position(0), uartComm(uart), clawSensing(gripSensor){};
 
     /**
      * @brief Open the robot claw.

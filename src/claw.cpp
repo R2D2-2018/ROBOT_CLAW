@@ -39,7 +39,7 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
 
     /// Move everything after the V mark to the begin of the array.
     for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
-        response[startIterator] = response[versionIterator + 1];
+        response[startIterator] = response[versionIterator];
         startIterator++;
     }
 }
@@ -95,32 +95,36 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
 }
 
 ClawState Claw::getState() {
-    uartComm << "#n P2232\n";
+    if (!clawSensing.getState()) {
+        return ClawState::CLOSED;
+    } else {
+        uartComm << "#n P2232\n";
 
-    char response[15];
-    receiveGcodeResponse(response, 15);
+        char response[15];
+        receiveGcodeResponse(response, 15);
 
-    /// Response format: $n ok V1\n
-    /// Search for V character
-    int vStart = 0;
+        /// Response format: $n ok V1\n
+        /// Search for V character
+        int vStart = 0;
 
-    for (int i = 0; i < 15; i++) {
-        /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
-        /// example: 1). We determine the position of the V mark.
-        if (response[i] == 'V') {
-            vStart = i;
-            break;
+        for (int i = 0; i < 15; i++) {
+            /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
+            /// example: 1). We determine the position of the V mark.
+            if (response[i] == 'V') {
+                vStart = i;
+                break;
+            }
         }
-    }
 
-    switch (response[vStart + 1]) {
-    case '0':
-        return ClawState::STOPPED;
-    case '1':
-        return ClawState::MOVING;
-    case '2':
-        return ClawState::GRIPPED_OBJECT;
-    default:
-        return ClawState::UNKNOWN;
+        switch (response[vStart + 1]) {
+        case '0':
+            return ClawState::STOPPED;
+        case '1':
+            return ClawState::MOVING;
+        case '2':
+            return ClawState::GRIPPED_OBJECT;
+        default:
+            return ClawState::UNKNOWN;
+        }
     }
 }

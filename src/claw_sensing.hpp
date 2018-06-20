@@ -1,7 +1,7 @@
 /**
- * @file
- * @brief     Implements the sensing capabilities of the robot claw.
- * @author    Wiebe van Breukelen
+ * @file      claw_sensing.hpp
+ * @brief     Class for sensing whether the claw is empty when closed
+ * @author    Wiebe van Breukelen, Joost van Lingen
  * @license   See LICENSE
  */
 
@@ -12,11 +12,11 @@
 
 class ClawSensing {
   private:
-    hwlib::pin_in &touchSensorLeft, &touchSensorRight;
+    hwlib::pin_in &gripSensor;
 
   public:
-    explicit ClawSensing(hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
-        : touchSensorLeft(touchSensorLeft), touchSensorRight(touchSensorRight){};
+    explicit ClawSensing(hwlib::pin_in &gripSensor);
+    bool getState();
 };
 
 #endif
