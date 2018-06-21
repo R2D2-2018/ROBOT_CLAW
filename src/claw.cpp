@@ -5,10 +5,7 @@ void Claw::open() {
 }
 
 void Claw::getError() {
-    uartComm << "#n G2202 N3 V120\n";
-    hwlib::wait_ms(500);
-    uartComm << "#n G2202 N3 V120\n";
-    hwlib::wait_ms(500);
+    uartComm << "#n P22222033\n";
     char response[60];
     receiveGcodeResponse(response, 60);
     for (auto const &value : response) {
@@ -154,4 +151,15 @@ ClawFeedback Claw::decodeGcodeResponse(char *response, size_t responseSize) {
         }
     }
     return ClawFeedback::OK;
+}
+
+bool Claw::checkUnknownCommand(char *input, size_t inputSize) {
+    for (size_t i = 0; i < inputSize; ++i) {
+        /// Check first two characters, chance seems sufficient untill a good pattern matching sulution is found.
+        if ((input[i] == unknownCommand[0]) && (input[i + 1] == unknownCommand[1])) {
+            return true;
+        }
+    }
+
+    return false;
 }

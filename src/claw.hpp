@@ -37,6 +37,8 @@ class Claw {
      */
     ClawSensing clawSensing;
 
+    static constexpr char unknownCommand[] = "Unknown command"; ///< Expected response upon unknown command.
+
   public:
     explicit Claw(UARTConnection &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
         : position(0), uartComm(uart), clawSensing(touchSensorLeft, touchSensorRight){};
@@ -104,6 +106,17 @@ class Claw {
      * @return ClawFeedback The decoded response from the uArm.
      */
     ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
+
+    /**
+     * @brief Function checks response for being message about an unknown command
+     *
+     * A crude pattern matching loop is used to check part of the response against the expected response from an unknown command error.
+     *
+     * @param[in] input pointer to the reponse.
+     * @param[in] inputSize size of the response.
+     * @return true if error message is present.
+     */
+    bool checkUnknownCommand(char *input, size_t inputSize);
 };
 
 #endif
