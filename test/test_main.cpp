@@ -15,3 +15,13 @@ TEST_CASE("Detect closed gripper") {
     REQUIRE(claw.getState() == ClawState::CLOSED);
     REQUIRE(claw.getState() != ClawState::CLOSED);
 }
+
+TEST_CASE("Set and Get yaw axis rotation") {
+    UARTLib::MockUART conn(115200, UARTLib::UARTController::THREE, false);
+    hwlib::test::pin_in<2> gripSensor{0, 1};
+    Claw claw(conn, gripSensor);
+
+    claw.setAngle(45);
+
+    REQUIRE(claw.getAngle() == 45);
+}

@@ -1,9 +1,10 @@
 /**
- * @file
+ * @file      claw.hpp
  * @brief     Interface for the uArm Swift Pro claw/gripper
- * @author    Wiebe van Breukelen, Sam Zandee
+ * @author    Wiebe van Breukelen, Sam Zandee, Joost van Lingen
  * @license   See LICENSE
  */
+
 #ifndef CLAW_HPP
 #define CLAW_HPP
 
@@ -13,44 +14,35 @@
 
 class Claw {
   private:
-    /**
-     * @brief The current position of the claw
-     *
-     */
-    unsigned int position;
-
-    /**
-     * @brief UART connection to communicate with the uArm Swift Pro.
-     *
-     */
-    UARTLib::UARTConnection &uartComm;
-
-    /**
-     * @brief Used to check if an object has been grabbed/released by the robotic claw.
-     *
-     */
-    ClawSensing clawSensing;
+    unsigned int position;             ///< The current position of the claw
+    UARTLib::UARTConnection &uartComm; ///< UART connection to communicate with the uArm Swift Pro.
+    ClawSensing clawSensing;           ///< Used to check if an object has been grabbed/released by the robotic claw.
+    int16_t yawAngle = 0;              ///< Stores the current angle of the yaw axis.
 
   public:
+    /**
+     * @brief Constructor for claw
+     *
+     * @param[in] uart Connection to the robot arm's built-in controller
+     * @param[in] gripSensor reference to the pin address the gripSensor is connected to
+     */
     explicit Claw(UARTLib::UARTConnection &uart, hwlib::pin_in &gripSensor)
         : position(0), uartComm(uart), clawSensing(gripSensor){};
 
     /**
      * @brief Open the robot claw.
-     *
      */
     void open();
 
     /**
      * @brief Close the robot claw.
-     *
      */
     void close();
 
     /**
      * @brief Get the current claw state.
      *
-     * @return CLawState Current state of the claw.
+     * @return ClawState Current state of the claw.
      */
     ClawState getState();
 
@@ -60,18 +52,31 @@ class Claw {
      * By trying to receive the firmware version, we determine if the uArm Swift Pro is connected.
      * If the arm is not connected, a serial receive timeout will occur.
      *
-     * @return true Device connected.
-     * @return false Device is not connected.
+     * @return bool Whether the uArm is connected.
      */
     bool isConnected();
 
     /**
      * @brief Get the version of the firmware currently running on the uArm.
      *
-     * @param response Char buffer to write version string to.
+     * @param[out] response Char buffer to write version string to.
      * @return char* Written char buffer.
      */
     void getUarmFirmwareVersion(char response[15]);
+
+    /**
+     * @brief Set rotation of claw yaw
+     *
+     * @param[in] rotation Rotation in degrees to turn to.
+     */
+    void setAngle(int16_t rotation);
+
+    /**
+     * @brief Get rotation of claw yaw
+     *
+     * @return Current rotation in degrees.
+     */
+    int16_t getAngle();
 
   private:
     /**
@@ -80,9 +85,9 @@ class Claw {
      * We continuely poll the uArm Swift Pro for new serial data. If the read timeout is reached,
      * we will stop the polling and return 0 (no characters received).
      *
-     * @param response Gcode response string.
-     * @param responseSize Gcode response string size.
-     * @param readTimeout UART receiver timeout in milliseconds.
+     * @param[out] response Gcode response string.
+     * @param[in] responseSize Gcode response string size.
+     * @param[in] readTimeout UART receiver timeout in milliseconds.
      * @return int Amount of character read (including \0).
      */
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);

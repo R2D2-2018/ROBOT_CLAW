@@ -1,7 +1,7 @@
 /**
  * @file
  * @brief     main.cpp for ROBOT_CLAW module
- * @author    Wiebe van Breukelen, Sam Zandee
+ * @author    Wiebe van Breukelen, Sam Zandee, Joost van Lingen
  * @license   See LICENSE
  */
 
@@ -22,7 +22,6 @@ int main() {
     Claw claw(conn, gripSensor);
 
     conn.begin();
-
     hwlib::wait_ms(1000);
 
     /// Check if the uArm is connected.
@@ -34,19 +33,23 @@ int main() {
 
     hwlib::wait_ms(1000);
 
-    char response[15];
-    hwlib::cout << "Receiving firmware version... -> ";
-
     /// Print the firmware version running on the claw.
     /// If the claw is not probably connected, this function will hang forever.
     /// In a further sprint, this should be fixed.
+    char response[15];
+    hwlib::cout << "Receiving firmware version... -> ";
     claw.getUarmFirmwareVersion(response);
-
     hwlib::cout << response << hwlib::endlRet;
 
     claw.open();
 
     while (true) {
+        hwlib::cout << "rotate" << hwlib::endlRet; ///< Rotation tests
+        for (int i = -90; i <= 90; i += 15) {
+            claw.setAngle(i);
+            hwlib::cout << claw.getAngle() << hwlib::endlRet;
+            hwlib::wait_ms(500);
+        }
         ClawState state = claw.getState();
         if (state == ClawState::CLOSED) {
             hwlib::cout << "CLOSED" << hwlib::endlRet << "{--------------------}" << '\r' << "{";
