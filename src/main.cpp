@@ -9,9 +9,9 @@
 
 #include "claw.hpp"
 #include "claw_state.hpp"
-#include "uart_connection.hpp"
+#include "uart_lib.hpp"
 
-inline void debugUarmRx(UARTConnection &conn);
+inline void debugUarmRx(UARTLib::UARTConnection &conn);
 
 namespace target = hwlib::target;
 
@@ -23,7 +23,7 @@ int main() {
     target::pin_in touchSensorLeft(target::pins::d4);
     target::pin_in touchSensorRight(target::pins::d5);
 
-    UARTConnection conn(115200, UARTController::ONE, false);
+    UARTLib::HardwareUART conn(115200, UARTLib::UARTController::ONE, false);
     Claw claw(conn, touchSensorLeft, touchSensorRight);
 
     conn.begin();
@@ -102,7 +102,7 @@ int main() {
  * endless main loop.
  *
  */
-inline void debugUarmRx(UARTConnection &conn) {
+inline void debugUarmRx(UARTLib::UARTConnection &conn) {
     if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 30) {
         for (unsigned int i = 0; i < conn.available(); i++) {
             hwlib::cout << conn.receive();

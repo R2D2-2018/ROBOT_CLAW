@@ -1,11 +1,14 @@
 include (${build_environment}/flags.cmake)
 
+set (uart_lib ${build_environment}/libraries/UART_LIB)
+include_directories (${uart_lib}/src)
+
 set (sources ${sources}
     src/main.cpp
     src/wrap-hwlib.cpp
     src/libc-stub.cpp
-    src/uart_connection.cpp
     src/claw.cpp
+    ${uart_lib}/src/hardware_uart.cpp
 )
 
 add_definitions (-DBMPTK_TARGET_arduino_due
