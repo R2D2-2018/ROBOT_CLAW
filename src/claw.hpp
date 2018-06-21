@@ -110,7 +110,8 @@ class Claw {
     /**
      * @brief Function checks response for being message about an unknown command
      *
-     * A crude pattern matching loop is used to check part of the response against the expected response from an unknown command error.
+     * A crude pattern matching loop is used to check part of the response against the expected response from an unknown command
+     * error.
      *
      * @param[in] input pointer to the reponse.
      * @param[in] inputSize size of the response.
