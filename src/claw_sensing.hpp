@@ -18,7 +18,7 @@ class ClawSensing {
     /**
      * @brief Constructor for ClawSensing
      *
-     * @param gripSensor reference to the pin address the gripSensor is connected to
+     * @param[in] gripSensor reference to the pin address the gripSensor is connected to
      */
     explicit ClawSensing(hwlib::pin_in &gripSensor);
 

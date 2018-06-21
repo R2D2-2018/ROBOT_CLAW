@@ -23,7 +23,8 @@ class Claw {
     /**
      * @brief Constructor for claw
      *
-     * @param uart Connection to the robot arm's built-in controller
+     * @param[in] uart Connection to the robot arm's built-in controller
+     * @param[in] gripSensor reference to the pin address the gripSensor is connected to
      */
     explicit Claw(UARTLib::UARTConnection &uart, hwlib::pin_in &gripSensor)
         : position(0), uartComm(uart), clawSensing(gripSensor){};
@@ -58,7 +59,7 @@ class Claw {
     /**
      * @brief Get the version of the firmware currently running on the uArm.
      *
-     * @param response Char buffer to write version string to.
+     * @param[out] response Char buffer to write version string to.
      * @return char* Written char buffer.
      */
     void getUarmFirmwareVersion(char response[15]);
@@ -66,7 +67,7 @@ class Claw {
     /**
      * @brief Set rotation of claw yaw
      *
-     * @param rotation Rotation in degrees to turn to.
+     * @param[in] rotation Rotation in degrees to turn to.
      */
     void setAngle(int16_t rotation);
 
@@ -84,9 +85,9 @@ class Claw {
      * We continuely poll the uArm Swift Pro for new serial data. If the read timeout is reached,
      * we will stop the polling and return 0 (no characters received).
      *
-     * @param response Gcode response string.
-     * @param responseSize Gcode response string size.
-     * @param readTimeout UART receiver timeout in milliseconds.
+     * @param[out] response Gcode response string.
+     * @param[in] responseSize Gcode response string size.
+     * @param[in] readTimeout UART receiver timeout in milliseconds.
      * @return int Amount of character read (including \0).
      */
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
