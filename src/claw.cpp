@@ -11,7 +11,7 @@ void Claw::close() {
 bool Claw::isConnected() {
     uartComm << "#n P2203\n";
 
-    /// By giving a null pointer as a method parameter, we save unnecessarily memory space.
+    /// By giving a null pointer as a method parameter, we save unnecessary memory space.
     if (!receiveGcodeResponse(nullptr, 255)) {
         return false;
     }
@@ -54,7 +54,7 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
 
     /// Move everything after the V mark to the begin of the array.
     for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
-        response[startIterator] = response[versionIterator] + 1;
+        response[startIterator] = response[versionIterator];
         startIterator++;
     }
 }
@@ -88,8 +88,9 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
                 responseCharCounter += 1;
 
                 lastRead = hwlib::now_us();
-            } else if (responseCharCounter > 0) { /// We have found a endline. If the response char counter is larger then zero
-                                                  /// (there is data), we will stopping polling for new data.
+            } else if (responseCharCounter > 0) {
+                /// We have found a endline. If the response char counter is larger then zero
+                /// (there is data), we will stopping polling for new data.
                 receivingData = false;
             }
         }
@@ -110,32 +111,36 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
 }
 
 ClawState Claw::getState() {
-    uartComm << "#n P2232\n";
+    if (!clawSensing.getState()) {
+        return ClawState::CLOSED;
+    } else {
+        uartComm << "#n P2232\n";
 
-    char response[15];
-    receiveGcodeResponse(response, 15);
+        char response[15];
+        receiveGcodeResponse(response, 15);
 
-    /// Response format: $n ok V1\n
-    /// Search for V character
-    int vStart = 0;
+        /// Response format: $n ok V1\n
+        /// Search for V character
+        int vStart = 0;
 
-    for (int i = 0; i < 15; i++) {
-        /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
-        /// example: 1). We determine the position of the V mark.
-        if (response[i] == 'V') {
-            vStart = i;
-            break;
+        for (int i = 0; i < 15; i++) {
+            /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
+            /// example: 1). We determine the position of the V mark.
+            if (response[i] == 'V') {
+                vStart = i;
+                break;
+            }
         }
-    }
 
-    switch (response[vStart + 1]) {
-    case '0':
-        return ClawState::STOPPED;
-    case '1':
-        return ClawState::MOVING;
-    case '2':
-        return ClawState::GRIPPED_OBJECT;
-    default:
-        return ClawState::UNKNOWN;
+        switch (response[vStart + 1]) {
+        case '0':
+            return ClawState::STOPPED;
+        case '1':
+            return ClawState::MOVING;
+        case '2':
+            return ClawState::GRIPPED_OBJECT;
+        default:
+            return ClawState::UNKNOWN;
+        }
     }
 }

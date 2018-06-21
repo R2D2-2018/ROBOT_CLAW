@@ -1,22 +1,23 @@
 /**
  * @file      claw.hpp
  * @brief     Interface for the uArm Swift Pro claw/gripper
- * @author    Wiebe van Breukelen, Sam Zandee
+ * @author    Wiebe van Breukelen, Sam Zandee, Joost van Lingen
  * @license   See LICENSE
  */
+
 #ifndef CLAW_HPP
 #define CLAW_HPP
 
 #include "claw_sensing.hpp"
 #include "claw_state.hpp"
-#include "uart_connection.hpp"
+#include "uart_lib.hpp"
 
 class Claw {
   private:
-    unsigned int position;    ///< The current position of the claw
-    UARTConnection &uartComm; ///< UART connection to communicate with the uArm Swift Pro.
-    ClawSensing clawSensing;  ///< Used to check if an object has been grabbed/released by the robotic claw.
-    int16_t yawAngle = 0;     ///< Stores the current angle of the yaw axis.
+    unsigned int position;             ///< The current position of the claw
+    UARTLib::UARTConnection &uartComm; ///< UART connection to communicate with the uArm Swift Pro.
+    ClawSensing clawSensing;           ///< Used to check if an object has been grabbed/released by the robotic claw.
+    int16_t yawAngle = 0;              ///< Stores the current angle of the yaw axis.
 
   public:
     /**
@@ -24,25 +25,23 @@ class Claw {
      *
      * @param uart Connection to the robot arm's built-in controller
      */
-    explicit Claw(UARTConnection &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
-        : position(0), uartComm(uart), clawSensing(touchSensorLeft, touchSensorRight){};
+    explicit Claw(UARTLib::UARTConnection &uart, hwlib::pin_in &gripSensor)
+        : position(0), uartComm(uart), clawSensing(gripSensor){};
 
     /**
      * @brief Open the robot claw.
-     *
      */
     void open();
 
     /**
      * @brief Close the robot claw.
-     *
      */
     void close();
 
     /**
      * @brief Get the current claw state.
      *
-     * @return CLawState Current state of the claw.
+     * @return ClawState Current state of the claw.
      */
     ClawState getState();
 
@@ -52,8 +51,7 @@ class Claw {
      * By trying to receive the firmware version, we determine if the uArm Swift Pro is connected.
      * If the arm is not connected, a serial receive timeout will occur.
      *
-     * @return true Device connected.
-     * @return false Device is not connected.
+     * @return bool Whether the uArm is connected.
      */
     bool isConnected();
 
