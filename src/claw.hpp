@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file      claw.hpp
  * @brief     Interface for the uArm Swift Pro claw/gripper
  * @author    Wiebe van Breukelen, Sam Zandee
  * @license   See LICENSE
@@ -13,25 +13,17 @@
 
 class Claw {
   private:
-    /**
-     * @brief The current position of the claw
-     *
-     */
-    unsigned int position;
-
-    /**
-     * @brief UART connection to communicate with the uArm Swift Pro.
-     *
-     */
-    UARTConnection &uartComm;
-
-    /**
-     * @brief Used to check if an object has been grabbed/released by the robotic claw.
-     *
-     */
-    ClawSensing clawSensing;
+    unsigned int position;    ///< The current position of the claw
+    UARTConnection &uartComm; ///< UART connection to communicate with the uArm Swift Pro.
+    ClawSensing clawSensing;  ///< Used to check if an object has been grabbed/released by the robotic claw.
+    int16_t yawAngle = 0;     ///< Stores the current angle of the yaw axis.
 
   public:
+    /**
+     * @brief Constructor for claw
+     *
+     * @param uart Connection to the robot arm's built-in controller
+     */
     explicit Claw(UARTConnection &uart, hwlib::pin_in &touchSensorLeft, hwlib::pin_in &touchSensorRight)
         : position(0), uartComm(uart), clawSensing(touchSensorLeft, touchSensorRight){};
 
@@ -74,9 +66,18 @@ class Claw {
     void getUarmFirmwareVersion(char response[15]);
 
     /**
-     * @brief Set current rotation of claw yaw
+     * @brief Set rotation of claw yaw
+     *
+     * @param rotation Rotation in degrees to turn to.
      */
-    void setRotation();
+    void setAngle(int16_t rotation);
+
+    /**
+     * @brief Get rotation of claw yaw
+     *
+     * @return Current rotation in degrees.
+     */
+    int16_t getAngle();
 
   private:
     /**

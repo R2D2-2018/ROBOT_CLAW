@@ -15,16 +15,24 @@ bool Claw::isConnected() {
     if (!receiveGcodeResponse(nullptr, 255)) {
         return false;
     }
-
     return true;
 }
 
-void Claw::setRotation() {
-    /// Rotate the 3rd anchor (yaw of claw)
-    /// Command as followed: G2201 is rotate single anchor command
-    /// N3 = 3rd node
-    /// V = value in degrees (1-180)
-    uartComm << "#n G2201 N3 V100\n";
+void Claw::setAngle(int16_t rotation) {
+    yawAngle = rotation;
+    rotation += 90; ///< Add 90 because the 0 point is 90 degrees
+    const char p100 = (rotation / 100) + '0';
+    const char p10 = (rotation / 10 % 10) + '0';
+    const char p1 = (rotation % 10) + '0';
+    uartComm << "#n G2202 N3 V"; ///< Command for third joint rotation
+    uartComm << p100;
+    uartComm << p10;
+    uartComm << p1;
+    uartComm << "\n";
+}
+
+int16_t Claw::getAngle() {
+    return yawAngle;
 }
 
 void Claw::getUarmFirmwareVersion(char response[15]) {

@@ -50,35 +50,16 @@ int main() {
     claw.getUarmFirmwareVersion(response);
 
     hwlib::cout << response << hwlib::endlRet;
+    while (true) {
+        hwlib::wait_ms(1000);
 
-    // bool state = false;
-    startMsReceive = hwlib::now_us() / 1000;
-    startMsSend = hwlib::now_us() / 1000;
-
-    /// opening and closing of the claw tests
-    hwlib::cout << "close\n" << hwlib::endlRet;
-    claw.close();
-    hwlib::wait_ms(1500);
-    hwlib::cout << "open\n" << hwlib::endlRet;
-    claw.open();
-    hwlib::wait_ms(2000);
-
-    /// Rotation tests
-    hwlib::cout << "rotate\n" << hwlib::endlRet;
-    claw.setRotation();
-}
-
-/**
- * @brief If the developer would like to view the serial output of the uArm Swift Pro, they can place this function within the
- * endless main loop.
- *
- */
-inline void debugUarmRx(UARTConnection &conn) {
-    if (conn.available() > 0 && (hwlib::now_us() / 1000) - startMsReceive > 30) {
-        for (unsigned int i = 0; i < conn.available(); i++) {
-            hwlib::cout << conn.receive();
+        /// Rotation tests
+        hwlib::cout << "rotate\n" << hwlib::endlRet;
+        // int16_t rotation = 174;
+        for (int i = -90; i <= 90; i += 10) {
+            claw.setAngle(i);
+            hwlib::cout << claw.getAngle() << hwlib::endlRet;
+            hwlib::wait_ms(500);
         }
-
-        startMsReceive = hwlib::now_us() / 1000;
     }
 }
