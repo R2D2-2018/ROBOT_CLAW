@@ -9,6 +9,7 @@ set (sources ${sources}
     src/libc-stub.cpp
     src/claw.cpp
     ${uart_lib}/src/hardware_uart.cpp
+    src/claw_sensing.cpp
 )
 
 add_definitions (-DBMPTK_TARGET_arduino_due

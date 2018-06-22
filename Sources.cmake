@@ -16,4 +16,6 @@ include_directories (${uart_lib}/src)
 set (sources
     ${uart_lib}/src/mock_uart.cpp
     ${uart_lib}/src/uart_connection.cpp
+    src/claw.cpp
+    src/claw_sensing.cpp
 )
