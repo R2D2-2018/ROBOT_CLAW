@@ -36,6 +36,10 @@ bool Claw::isConnected() {
 }
 
 void Claw::setAngle(int16_t rotation) {
+    if (rotation > 180) {
+        return;
+    }
+
     yawAngle = rotation;
     rotation += 90; ///< Add 90 because the 0 point is 90 degrees
     const char p100 = (rotation / 100) + '0';
