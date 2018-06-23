@@ -28,16 +28,31 @@ void Claw::close() {
 bool Claw::isConnected() {
     uartComm << "#n P2203\n";
 
-    /// By giving a null pointer as a method parameter, we save unnecessarily memory space.
+    /// By giving a null pointer as a method parameter, we save unnecessary memory space.
     if (!receiveGcodeResponse(nullptr, 255)) {
         return false;
     }
-
     return true;
 }
 
+void Claw::setAngle(int16_t rotation) {
+    yawAngle = rotation;
+    rotation += 90; ///< Add 90 because the 0 point is 90 degrees
+    const char p100 = (rotation / 100) + '0';
+    const char p10 = (rotation / 10 % 10) + '0';
+    const char p1 = (rotation % 10) + '0';
+    uartComm << "#n G2202 N3 V"; ///< Command for third joint rotation
+    uartComm << p100;
+    uartComm << p10;
+    uartComm << p1;
+    uartComm << "\n";
+}
+
+int16_t Claw::getAngle() {
+    return yawAngle;
+}
+
 void Claw::getUarmFirmwareVersion(char response[15]) {
-    uartComm << "#n P2203\n";
 
     receiveGcodeResponse(response, 15);
 
@@ -56,7 +71,7 @@ void Claw::getUarmFirmwareVersion(char response[15]) {
 
     /// Move everything after the V mark to the begin of the array.
     for (int versionIterator = versionStart; versionIterator < 15; ++versionIterator) {
-        response[startIterator] = response[versionIterator + 1];
+        response[startIterator] = response[versionIterator];
         startIterator++;
     }
 }
@@ -90,8 +105,9 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
                 responseCharCounter += 1;
 
                 lastRead = hwlib::now_us();
-            } else if (responseCharCounter > 0) { /// We have found a endline. If the response char counter is larger then zero
-                                                  /// (there is data), we will stopping polling for new data.
+            } else if (responseCharCounter > 0) {
+                /// We have found a endline. If the response char counter is larger then zero
+                /// (there is data), we will stopping polling for new data.
                 receivingData = false;
             }
         }
@@ -112,25 +128,29 @@ int Claw::receiveGcodeResponse(char *response, size_t responseSize, unsigned int
 }
 
 ClawState Claw::getState() {
-    uartComm << "#n P2232\n";
+    if (!clawSensing.getState()) {
+        return ClawState::CLOSED;
+    } else {
+        uartComm << "#n P2232\n";
 
-    char response[15];
-    receiveGcodeResponse(response, 15);
+        char response[15];
+        receiveGcodeResponse(response, 15);
 
-    /// Response format: $n ok V1\n
-    /// Search for V character
-    int vStart = 0;
+        /// Response format: $n ok V1\n
+        /// Search for V character
+        int vStart = 0;
 
-    for (int i = 0; i < 15; i++) {
-        /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
-        /// example: 1). We determine the position of the V mark.
-        if (response[i] == 'V') {
-            vStart = i;
-            break;
+        for (int i = 0; i < 15; i++) {
+            /// If we have the Gcode response `$n ok V1` we only want to return the stuff behind the V mark (in this
+            /// example: 1). We determine the position of the V mark.
+            if (response[i] == 'V') {
+                vStart = i;
+                break;
+            }
         }
-    }
 
-    return decodeClawState(response, vStart);
+        return decodeClawState(response, vStart);
+    }
 }
 
 ClawState Claw::decodeClawState(char *response, int vStart) {
