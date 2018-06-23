@@ -19,6 +19,10 @@ bool Claw::isConnected() {
 }
 
 void Claw::setAngle(int16_t rotation) {
+    if (rotation > 180) {
+        return;
+    }
+
     yawAngle = rotation;
     rotation += 90; ///< Add 90 because the 0 point is 90 degrees
     const char p100 = (rotation / 100) + '0';
@@ -132,15 +136,41 @@ ClawState Claw::getState() {
             }
         }
 
-        switch (response[vStart + 1]) {
-        case '0':
-            return ClawState::STOPPED;
-        case '1':
-            return ClawState::MOVING;
-        case '2':
-            return ClawState::GRIPPED_OBJECT;
-        default:
-            return ClawState::UNKNOWN;
+        return decodeClawState(response, vStart);
+    }
+}
+
+ClawState Claw::decodeClawState(char *response, int vStart) {
+    switch (response[vStart + 1]) {
+    case '0':
+        return ClawState::STOPPED;
+    case '1':
+        return ClawState::MOVING;
+    case '2':
+        return ClawState::GRIPPED_OBJECT;
+    default:
+        return ClawState::UNKNOWN;
+    }
+}
+
+ClawFeedback Claw::decodeGcodeResponse(char *response, size_t responseSize) {
+    for (int i = 0; i < 15; ++i) {
+        if (response[i] == 'o' && response[i + 1] == 'k') {
+            return ClawFeedback::OK;
+        } else if (response[i] == 'E') {
+            return static_cast<ClawFeedback>(response[i + 2]);
         }
     }
+    return ClawFeedback::OK;
+}
+
+bool Claw::checkUnknownCommand(char *input, size_t inputSize) {
+    for (size_t i = 0; i < inputSize; ++i) {
+        ///< Check first two characters, chance seems sufficient untill a good pattern matching sulution is found.
+        if ((input[i] == unknownCommand[0]) && (input[i + 1] == unknownCommand[1])) {
+            return true;
+        }
+    }
+
+    return false;
 }
