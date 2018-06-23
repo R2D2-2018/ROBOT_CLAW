@@ -79,6 +79,28 @@ class Claw {
      */
     void getUarmFirmwareVersion(char response[15]);
 
+    /**
+     * @brief Decode string recieved from the uArm.
+     *
+     * Returns one of the states from the ClawFeedback enum.
+     *
+     * @param[in] response Gcode response string.
+     * @param[in] responseSize Gcode response string size.
+     * @return ClawFeedback The decoded response from the uArm.
+     */
+    ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
+
+    /**
+     * @brief Decode response into claw state
+     *
+     * Decodes response string into claw state.
+     *
+     * @param[in] response Gcode reponse string
+     * @param[in] vStart start of the response byte
+     * @return clawState The state of the claw
+     */
+    ClawState decodeClawState(char *response, int vStart);
+
   private:
     /**
      * @brief Receive Gcode string from the uArm Swift Pro using UART.
@@ -92,17 +114,6 @@ class Claw {
      * @return int Amount of character read (including \0).
      */
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
-
-    /**
-     * @brief Decode string recieved from the uArm.
-     *
-     * Returns one of the states from the ClawFeedback enum.
-     *
-     * @param[in] response Gcode response string.
-     * @param[in] responseSize Gcode response string size.
-     * @return ClawFeedback The decoded response from the uArm.
-     */
-    ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
 };
 
 #endif

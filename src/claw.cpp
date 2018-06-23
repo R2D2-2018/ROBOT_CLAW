@@ -113,6 +113,10 @@ ClawState Claw::getState() {
         }
     }
 
+    return decodeClawState(response, vStart);
+}
+
+ClawState Claw::decodeClawState(char *response, int vStart) {
     switch (response[vStart + 1]) {
     case '0':
         return ClawState::STOPPED;
