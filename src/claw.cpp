@@ -4,6 +4,23 @@ void Claw::open() {
     uartComm << "#n M2232 V0\n";
 }
 
+void Claw::getError() {
+    uartComm << "#n P22222033\n";
+    char response[60];
+    receiveGcodeResponse(response, 60);
+    for (auto const &value : response) {
+        hwlib::cout << value << ",";
+    }
+    hwlib::cout << hwlib::endlRet;
+    ClawFeedback feedback = decodeGcodeResponse(response, 60);
+    if (feedback == ClawFeedback::OK) {
+        hwlib::cout << "OK" << hwlib::endlRet;
+    } else {
+        hwlib::cout << "error" << hwlib::endlRet;
+        // static_cast<int>(feedback)
+    }
+}
+
 void Claw::close() {
     uartComm << "#n M2232 V1\n";
 }
@@ -138,4 +155,15 @@ ClawFeedback Claw::decodeGcodeResponse(char *response, size_t responseSize) {
         }
     }
     return ClawFeedback::OK;
+}
+
+bool Claw::checkUnknownCommand(char *input, size_t inputSize) {
+    for (size_t i = 0; i < inputSize; ++i) {
+        /// Check first two characters, chance seems sufficient untill a good pattern matching sulution is found.
+        if ((input[i] == unknownCommand[0]) && (input[i + 1] == unknownCommand[1])) {
+            return true;
+        }
+    }
+
+    return false;
 }
