@@ -119,17 +119,6 @@ class Claw {
     int receiveGcodeResponse(char *response, size_t responseSize, unsigned int readTimeout = 50);
 
     /**
-     * @brief Decode string recieved from the uArm.
-     *
-     * Returns one of the states from the ClawFeedback enum.
-     *
-     * @param[in] response Gcode response string.
-     * @param[in] responseSize Gcode response string size.
-     * @return ClawFeedback The decoded response from the uArm.
-     */
-    ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
-
-    /**
      * @brief Function checks response for being message about an unknown command
      *
      * A crude pattern matching loop is used to check part of the response against the expected response from an unknown command
