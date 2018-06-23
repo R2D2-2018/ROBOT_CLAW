@@ -166,7 +166,7 @@ ClawFeedback Claw::decodeGcodeResponse(char *response, size_t responseSize) {
 
 bool Claw::checkUnknownCommand(char *input, size_t inputSize) {
     for (size_t i = 0; i < inputSize; ++i) {
-        /// Check first two characters, chance seems sufficient untill a good pattern matching sulution is found.
+        ///< Check first two characters, chance seems sufficient untill a good pattern matching sulution is found.
         if ((input[i] == unknownCommand[0]) && (input[i + 1] == unknownCommand[1])) {
             return true;
         }
