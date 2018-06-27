@@ -24,7 +24,7 @@ int main() {
     conn.begin();
     hwlib::wait_ms(1000);
 
-    /// Check if the uArm is connected.
+    ///< Check if the uArm is connected.
     if (!claw.isConnected()) {
         hwlib::cout << "uArm is not connected!" << hwlib::endlRet;
         while (!claw.isConnected())
@@ -33,9 +33,9 @@ int main() {
 
     hwlib::wait_ms(1000);
 
-    /// Print the firmware version running on the claw.
-    /// If the claw is not probably connected, this function will hang forever.
-    /// In a further sprint, this should be fixed.
+    ///< Print the firmware version running on the claw.
+    ///< If the claw is not probably connected, this function will hang forever.
+    ///< In a further sprint, this should be fixed.
     char response[15];
     hwlib::cout << "Receiving firmware version... -> ";
     claw.getUarmFirmwareVersion(response);
