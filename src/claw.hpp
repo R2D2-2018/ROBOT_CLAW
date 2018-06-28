@@ -13,14 +13,14 @@
 #include "uart_lib.hpp"
 
 /**
- * @brief Enum containing all the different possible responses given by the uArm
+ * @brief Enum containing all the different possible responses given by the uArm.
  *
  */
 enum class ClawFeedback { E20 = '0', E21 = '1', E22 = '2', E23 = '3', E24 = '4', E25 = '5', OK };
 
 class Claw {
   private:
-    unsigned int position;             ///< The current position of the claw
+    unsigned int position;             ///< The current position of the claw.
     UARTLib::UARTConnection &uartComm; ///< UART connection to communicate with the uArm Swift Pro.
     ClawSensing clawSensing;           ///< Used to check if an object has been grabbed/released by the robotic claw.
     int16_t yawAngle = 0;              ///< Stores the current angle of the yaw axis.
@@ -29,10 +29,10 @@ class Claw {
 
   public:
     /**
-     * @brief Constructor for claw
+     * @brief Constructor for claw.
      *
-     * @param[in] uart Connection to the robot arm's built-in controller
-     * @param[in] gripSensor reference to the pin address the gripSensor is connected to
+     * @param[in] uart Connection to the robot arm's built-in controller.
+     * @param[in] gripSensor reference to the pin address the gripSensor is connected to.
      */
 
     explicit Claw(UARTLib::UARTConnection &uart, hwlib::pin_in &gripSensor)
@@ -85,32 +85,32 @@ class Claw {
     ClawFeedback decodeGcodeResponse(char *response, size_t responseSize);
 
     /**
-     * @brief Decode response into claw state
+     * @brief Decode response into claw state.
      *
      * Decodes response string into claw state.
      *
-     * @param[in] response Gcode reponse string
-     * @param[in] vStart start of the response byte
-     * @return clawState The state of the claw
+     * @param[in] response Gcode reponse string.
+     * @param[in] vStart start of the response byte.
+     * @return clawState The state of the claw.
      */
     ClawState decodeClawState(char *response, int vStart);
 
     /**
-     * @brief Set rotation of claw yaw
+     * @brief Set rotation of claw yaw.
      *
      * @param[in] rotation Rotation in degrees to turn to.
      */
     void setAngle(int16_t rotation);
 
     /**
-     * @brief Get rotation of claw yaw
+     * @brief Get rotation of claw yaw.
      *
      * @return Current rotation in degrees.
      */
     int16_t getAngle();
 
     /**
-     * @brief Function checks response for being message about an unknown command
+     * @brief Function checks response for being message about an unknown command.
      *
      * A crude pattern matching loop is used to check part of the response against the expected response from an unknown command
      * error.
