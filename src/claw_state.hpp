@@ -9,7 +9,7 @@
 #define CLAW_STATE_HPP
 
 /**
- * @brief Enum class for claw states
+ * @brief Enum class for claw states.
  *
  * The various claw states that can be determined in an enum class.
  */

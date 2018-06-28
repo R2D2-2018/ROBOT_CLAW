@@ -12,18 +12,18 @@
 
 class ClawSensing {
   private:
-    hwlib::pin_in &gripSensor; ///< Reference to the pin address the gripSensor is connected to
+    hwlib::pin_in &gripSensor; ///< Reference to the pin address the gripSensor is connected to.
 
   public:
     /**
      * @brief Constructor for ClawSensing
      *
-     * @param[in] gripSensor reference to the pin address the gripSensor is connected to
+     * @param[in] gripSensor Reference to the pin address the gripSensor is connected to.
      */
     explicit ClawSensing(hwlib::pin_in &gripSensor);
 
     /**
-     * @brief Get the state of the gripSensor
+     * @brief Get the state of the gripSensor.
      *
      * This function returns the state of the gripSensor. When it returns true, the claw is open.
      *
