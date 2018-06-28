@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 
-#include "../src/wrap-hwlib.hpp"
+#include "wrap-hwlib.hpp"
 
 #include "claw.hpp"
 #include "claw_state.hpp"
